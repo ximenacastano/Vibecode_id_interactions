@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoFlow Sales Onboarding — Branching Scenario</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, #0b1220 0%, #131f35 100%);
+      min-height: 100vh;
+      color: #dde6f0;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .app-header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #38bdf8;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .app-header p {
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+    .role-chip {
+      display: inline-block;
+      background: rgba(56,189,248,0.12);
+      border: 1px solid rgba(56,189,248,0.35);
+      color: #38bdf8;
+      border-radius: 99px;
+      padding: 3px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-top: 8px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      background: #162032;
+      border: 1px solid #243247;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      transition: opacity 0.3s;
+    }
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .prog-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #475569;
+    }
+    .prog-count { color: #94a3b8; }
+    .progress-track {
+      background: #0b1220;
+      border-radius: 99px;
+      height: 7px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      transition: width 0.55s ease;
+    }
+    .badge-row {
+      display: flex;
+      gap: 10px;
+    }
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #0b1220;
+      border: 1px solid #243247;
+      border-radius: 99px;
+      padding: 4px 12px;
+      font-size: 0.76rem;
+      color: #94a3b8;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-good  { background: #22c55e; }
+    .dot-poor  { background: #ef4444; }
+
+    /* ── Scene card ── */
+    .scene-card {
+      background: #162032;
+      border: 1px solid #243247;
+      border-radius: 18px;
+      padding: 30px;
+      animation: fadeUp 0.4s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .scene-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.25);
+      color: #38bdf8;
+      border-radius: 99px;
+      padding: 4px 13px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 14px;
+    }
+    .scene-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #f1f5f9;
+      margin-bottom: 18px;
+      line-height: 1.3;
+    }
+
+    /* ── Characters ── */
+    .characters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .char-chip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: #0e1b2c;
+      border: 1px solid #243247;
+      border-radius: 10px;
+      padding: 8px 14px;
+    }
+    .char-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .av-you      { background: rgba(56,189,248,0.18); }
+    .av-prospect { background: rgba(168,85,247,0.18); }
+    .av-boss     { background: rgba(251,146,60,0.18); }
+    .char-name { font-size: 0.8rem; font-weight: 700; color: #e2e8f0; }
+    .char-role { font-size: 0.7rem; color: #475569; }
+
+    /* ── Narrative & Dialogue ── */
+    .narrative {
+      color: #b4c4d8;
+      font-size: 0.92rem;
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .dialogue {
+      background: #0e1b2c;
+      border-left: 3px solid #38bdf8;
+      border-radius: 0 10px 10px 0;
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-style: italic;
+      color: #dde6f0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+    .dialogue.prospect { border-color: #a855f7; }
+    .dialogue.boss     { border-color: #fb923c; }
+    .dial-speaker {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-style: normal;
+      color: #64748b;
+      margin-bottom: 5px;
+    }
+
+    /* ── Decision section ── */
+    .decision-prompt {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #f59e0b;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .decision-prompt::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: #f59e0b;
+      border-radius: 50%;
+      display: block;
+    }
+    .decision-question {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      font-style: italic;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .choices { display: flex; flex-direction: column; gap: 10px; }
+    .choice-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #0e1b2c;
+      border: 1px solid #243247;
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #dde6f0;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.18s, border-color 0.18s, transform 0.15s;
+    }
+    .choice-btn:not(:disabled):hover {
+      background: #1a3050;
+      border-color: #38bdf8;
+      transform: translateX(4px);
+    }
+    .choice-btn:disabled { cursor: default; }
+    .choice-letter {
+      min-width: 24px; height: 24px;
+      background: #243247;
+      color: #64748b;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .choice-btn:not(:disabled):hover .choice-letter {
+      background: #38bdf8;
+      color: #0b1220;
+    }
+    .choice-btn.selected-good  { background: rgba(34,197,94,0.08);  border-color: #22c55e; }
+    .choice-btn.selected-poor  { background: rgba(239,68,68,0.08);  border-color: #ef4444; }
+    .choice-btn.selected-good  .choice-letter { background: #22c55e; color: #fff; }
+    .choice-btn.selected-poor  .choice-letter { background: #ef4444; color: #fff; }
+    .choice-btn.dimmed { opacity: 0.35; }
+
+    /* ── Feedback ── */
+    .feedback-box {
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 16px;
+      animation: fadeUp 0.35s ease both;
+    }
+    .feedback-box.good { background: rgba(34,197,94,0.08);  border: 1px solid rgba(34,197,94,0.3); }
+    .feedback-box.poor { background: rgba(239,68,68,0.08);  border: 1px solid rgba(239,68,68,0.3); }
+    .feedback-header {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .feedback-box.good .feedback-header { color: #22c55e; }
+    .feedback-box.poor .feedback-header { color: #ef4444; }
+    .feedback-text {
+      color: #b4c4d8;
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+
+    /* ── Continue / Start button ── */
+    .cta-btn {
+      margin-top: 18px;
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      color: #0b1220;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 24px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: opacity 0.18s, transform 0.15s;
+    }
+    .cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── Endings ── */
+    .ending-card {
+      background: #162032;
+      border: 1px solid #243247;
+      border-radius: 18px;
+      padding: 40px 32px;
+      text-align: center;
+      animation: fadeUp 0.5s ease both;
+    }
+    .ending-icon { font-size: 4rem; margin-bottom: 18px; display: block; }
+    .ending-title {
+      font-size: 1.55rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .ending-title.best   { color: #22c55e; }
+    .ending-title.medium { color: #f59e0b; }
+    .ending-title.poor   { color: #ef4444; }
+    .ending-sub {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 26px;
+    }
+
+    .score-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+    .score-box {
+      background: #0e1b2c;
+      border: 1px solid #243247;
+      border-radius: 12px;
+      padding: 14px 22px;
+      min-width: 90px;
+    }
+    .score-num  { font-size: 1.55rem; font-weight: 900; }
+    .score-desc { font-size: 0.68rem; color: #475569; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+    .ending-body {
+      background: #0e1b2c;
+      border: 1px solid #243247;
+      border-radius: 12px;
+      padding: 20px 22px;
+      text-align: left;
+      color: #b4c4d8;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+    .takeaways {
+      background: #0e1b2c;
+      border: 1px solid #243247;
+      border-radius: 12px;
+      padding: 20px 22px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .takeaways-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #38bdf8;
+      margin-bottom: 12px;
+    }
+    .takeaway {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.875rem;
+      color: #b4c4d8;
+      line-height: 1.55;
+      padding: 5px 0;
+    }
+    .takeaway::before {
+      content: '→';
+      color: #38bdf8;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .restart-btn {
+      display: inline-block;
+      background: transparent;
+      border: 2px solid #38bdf8;
+      color: #38bdf8;
+      border-radius: 10px;
+      padding: 12px 36px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+    }
+    .restart-btn:hover { background: #38bdf8; color: #0b1220; }
+
+    @media (max-width: 560px) {
+      .scene-card, .ending-card { padding: 20px 16px; }
+      .scene-title { font-size: 1.08rem; }
+      .ending-title { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header class="app-header">
+    <h1>AutoFlow Sales Onboarding</h1>
+    <p>A branching scenario — your decisions shape the outcome</p>
+    <span class="role-chip">You are: Sales Representative</span>
+  </header>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-row">
+      <span class="prog-label">Decision Progress</span>
+      <span class="prog-label prog-count" id="progCount">0 / 5</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="badge-row">
+      <div class="badge"><span class="dot dot-good"></span><span id="goodBadge">0 Strong</span></div>
+      <div class="badge"><span class="dot dot-poor"></span><span id="poorBadge">0 Weak</span></div>
+    </div>
+  </div>
+
+  <div id="sceneRoot"></div>
+
+</div>
+<script>
+// ─────────────────────────────────────────────
+//  SCENARIO DATA
+// ─────────────────────────────────────────────
+const SCENES = {
+
+  // ── Intro ──────────────────────────────────
+  intro: {
+    tag: 'Briefing',
+    title: 'Your New Account: Meridian Manufacturing',
+    chars: [{ emoji: '🧑‍💼', av: 'av-you', name: 'You', role: 'Sales Representative — AutoFlow Solutions' }],
+    body: `You've just joined <strong>AutoFlow Solutions</strong>, a B2B company that sells workflow-automation software to mid-sized businesses. Your manager has handed you a warm lead: <strong>Meridian Manufacturing</strong> — a 250-person firm drowning in manual order processing, data-entry errors, and slow reporting.
+    <br><br>Your task: turn this lead into a signed contract. The choices you make across five key interactions will determine whether you close the deal, stall it, or lose it entirely.`,
+    startNext: 'scene1'
+  },
+
+  // ── Scene 1: Discovery Call ─────────────────
+  scene1: {
+    tag: 'Scene 1 of 5 — Discovery Call',
+    title: 'The First Conversation',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',      name: 'You',           role: 'Sales Representative' },
+      { emoji: '👩‍💼', av: 'av-prospect', name: 'Rachel Torres', role: 'Operations Manager, Meridian' }
+    ],
+    body: `You've scheduled a 30-minute intro call with Rachel Torres, Meridian's Operations Manager. She mentioned her team is "overwhelmed with manual work" but hasn't committed to anything. The call begins.`,
+    dial: { cls: 'prospect', speaker: 'Rachel Torres', text: '"Thanks for reaching out. We've been looking at a few solutions. What does AutoFlow do, exactly?"' },
+    question: 'How do you respond to open the conversation?',
+    choices: [
+      {
+        text: 'Launch into a full product pitch: features, pricing tiers, and customer logos.',
+        quality: 'poor',
+        feedback: 'Pitching before you understand their needs is a classic mistake. Rachel hasn\'t told you what she actually needs — you\'re already making assumptions. Prospects disengage when they feel like they\'re listening to a recording, not a real conversation.',
+        next: 'scene2_bad'
+      },
+      {
+        text: 'Ask Rachel about her team\'s specific pain points before describing the product.',
+        quality: 'good',
+        feedback: 'Excellent consultative move. By asking discovery questions first, you signal that you care about her situation — not just closing a deal. This builds trust and ensures your positioning will be relevant to her actual challenges.',
+        next: 'scene2_good'
+      },
+      {
+        text: 'Offer to send a detailed brochure and suggest she review it before your next chat.',
+        quality: 'poor',
+        feedback: 'Deflecting a live, engaged prospect to a PDF kills momentum. Rachel is on the line right now — this is your best window for real discovery. Delaying gives her time to lose interest or evaluate a competitor instead.',
+        next: 'scene2_bad'
+      }
+    ]
+  },
+
+  // ── Scene 2 — Good path ─────────────────────
+  scene2_good: {
+    tag: 'Scene 2 of 5 — Stakeholder Mapping',
+    title: 'Rachel Opens Up',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',      name: 'You',           role: 'Sales Representative' },
+      { emoji: '👩‍💼', av: 'av-prospect', name: 'Rachel Torres', role: 'Operations Manager, Meridian' }
+    ],
+    body: `Your discovery questions worked. Rachel describes her team\'s real frustrations — manual data entry consuming 15+ hours per week, frequent order errors, and reporting that takes days. Then she drops something important:`,
+    dial: { cls: 'prospect', speaker: 'Rachel Torres', text: '"This sounds really promising. But I should mention — any tool over $5,000 needs sign-off from our VP of Operations, David Chen. He\'s very budget-conscious."' },
+    question: 'How do you handle the mention of a second decision-maker?',
+    choices: [
+      {
+        text: 'Acknowledge David and ask Rachel if she can arrange a joint meeting with both of them.',
+        quality: 'good',
+        feedback: 'Smart stakeholder management. In B2B sales, identifying and engaging all decision-makers early prevents last-minute blockers. Asking for a multi-stakeholder meeting shows professionalism and ensures the deal moves on solid footing.',
+        next: 'scene3_good'
+      },
+      {
+        text: 'Tell Rachel you\'ll work through her — she can relay information to David.',
+        quality: 'poor',
+        feedback: 'This is a common but costly misstep. Rachel may not accurately convey your value proposition to David, and you\'ll have no chance to handle his objections directly. Deals that skip decision-makers routinely stall or die in approval.',
+        next: 'scene3_medium'
+      }
+    ]
+  },
+
+  // ── Scene 2 — Bad path ──────────────────────
+  scene2_bad: {
+    tag: 'Scene 2 of 5 — Course Correction',
+    title: 'Rachel Seems Disengaged',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',      name: 'You',           role: 'Sales Representative' },
+      { emoji: '👩‍💼', av: 'av-prospect', name: 'Rachel Torres', role: 'Operations Manager, Meridian' }
+    ],
+    body: `Your pitch or deferral has left Rachel lukewarm. She's giving short answers and sounds politely uninterested. You realize this call isn't going the way you hoped.`,
+    dial: { cls: 'prospect', speaker: 'Rachel Torres', text: '"Okay… that\'s a lot of information. I\'m not sure yet if it\'s the right fit for us."' },
+    question: 'How do you recover?',
+    choices: [
+      {
+        text: 'Pause and pivot — ask what specific challenges her team faces day-to-day.',
+        quality: 'good',
+        feedback: 'Good recovery. Shifting to discovery mid-call is better than persisting on the wrong approach. It shows self-awareness and genuine interest in Rachel\'s world. You\'ve lost some ground, but you can still rescue this conversation.',
+        next: 'scene3_medium'
+      },
+      {
+        text: 'Keep pushing the product benefits — she just needs to hear more to get excited.',
+        quality: 'poor',
+        feedback: 'Doubling down on a pitch when a prospect signals disinterest almost never works. Rachel has already shown uncertainty about fit — more features won\'t fix that. This approach typically ends the call with no agreed next step.',
+        next: 'end_poor'
+      }
+    ]
+  },
+
+  // ── Scene 3 — Best path ─────────────────────
+  scene3_good: {
+    tag: 'Scene 3 of 5 — Objection Handling',
+    title: 'The Joint Meeting',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',      name: 'You',           role: 'Sales Representative' },
+      { emoji: '👩‍💼', av: 'av-prospect', name: 'Rachel Torres', role: 'Operations Manager, Meridian' },
+      { emoji: '👨‍💼', av: 'av-boss',     name: 'David Chen',    role: 'VP of Operations, Meridian' }
+    ],
+    body: `You\'ve secured a follow-up meeting with both Rachel and VP David Chen. David is polite but clearly skeptical. As the meeting opens, he raises a concern:`,
+    dial: { cls: 'boss', speaker: 'David Chen', text: '"We invested in a system last year — we use TrackPro for order management. I\'m not convinced we need another tool on top of that."' },
+    question: 'How do you respond to David\'s objection?',
+    choices: [
+      {
+        text: 'Ask David what TrackPro handles well and where gaps or manual workarounds still exist.',
+        quality: 'good',
+        feedback: 'Excellent objection handling. Rather than attacking the competitor, you respect their existing investment and let them identify the pain themselves. This positions AutoFlow as a complement, not a threat — and it\'s far more persuasive than a direct feature comparison.',
+        next: 'scene4_good'
+      },
+      {
+        text: 'Tell David that TrackPro is outdated and AutoFlow handles everything it does, plus much more.',
+        quality: 'poor',
+        feedback: 'Disparaging a tool they\'ve already bought feels like an attack on their decision-making. Even if you\'re right about TrackPro\'s limits, this approach puts David on the defensive and damages the rapport you need to close the deal.',
+        next: 'scene4_medium'
+      }
+    ]
+  },
+
+  // ── Scene 3 — Medium path ───────────────────
+  scene3_medium: {
+    tag: 'Scene 3 of 5 — Product Demo',
+    title: 'Time to Show the Product',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',      name: 'You',           role: 'Sales Representative' },
+      { emoji: '👩‍💼', av: 'av-prospect', name: 'Rachel Torres', role: 'Operations Manager, Meridian' }
+    ],
+    body: `You\'ve moved forward to a product demo with Rachel. You\'ve gathered some basic information about Meridian\'s challenges, though not as deeply as you\'d like. Rachel is ready to see AutoFlow in action.`,
+    dial: { cls: 'prospect', speaker: 'Rachel Torres', text: '"Alright, I\'m ready to see it. I want to understand how this would actually work for us — not just a general walkthrough."' },
+    question: 'How do you run the demo?',
+    choices: [
+      {
+        text: 'Build a demo scenario around Meridian\'s order-processing workflow and data-entry pain points.',
+        quality: 'good',
+        feedback: 'Tailoring the demo to their specific context is a major differentiator. Rachel can immediately visualize the solution in her world, making the value tangible. Even without deep discovery, using what you know shows professionalism and preparation.',
+        next: 'scene4_medium'
+      },
+      {
+        text: 'Walk through the standard product demo script, covering all major features in order.',
+        quality: 'poor',
+        feedback: 'Generic demos fail to connect emotionally. When Rachel doesn\'t see her specific problems addressed, every feature feels abstract. "Nice, but not sure it\'s for us" is the typical response — and that\'s momentum you can\'t afford to lose at this stage.',
+        next: 'end_poor'
+      }
+    ]
+  },
+
+  // ── Scene 4 — Best path ─────────────────────
+  scene4_good: {
+    tag: 'Scene 4 of 5 — The Proposal',
+    title: 'David Is Leaning In',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',  name: 'You',       role: 'Sales Representative' },
+      { emoji: '👨‍💼', av: 'av-boss', name: 'David Chen', role: 'VP of Operations, Meridian' }
+    ],
+    body: `David acknowledged that TrackPro doesn\'t handle automated reporting or cross-department workflows well. The conversation shifted positively. He now asks for a formal proposal before any decision can be made.`,
+    dial: { cls: 'boss', speaker: 'David Chen', text: '"I\'d like to see a formal proposal — pricing and a projected ROI. Make it specific to what we\'ve discussed today."' },
+    question: 'How do you prepare the proposal?',
+    choices: [
+      {
+        text: 'Build a custom proposal featuring Meridian\'s specific workflows, estimated time savings, and ROI projections based on their data.',
+        quality: 'good',
+        feedback: 'A customized, ROI-driven proposal speaks David\'s language: budget justification. Showing that AutoFlow could save 15 hrs/week × average ops salary = $X/year makes internal approval far easier for finance-conscious executives. This is proposal best practice.',
+        next: 'scene5_good'
+      },
+      {
+        text: 'Send the standard proposal template with general feature descriptions and list pricing.',
+        quality: 'poor',
+        feedback: 'After a personalized conversation, a generic proposal feels like a letdown. David asked for something specific — a template signals you stopped listening once you got the meeting. Budget approvers need justification data, not feature lists.',
+        next: 'scene5_medium'
+      }
+    ]
+  },
+
+  // ── Scene 4 — Medium path ───────────────────
+  scene4_medium: {
+    tag: 'Scene 4 of 5 — Follow-Up',
+    title: 'Waiting on a Response',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',      name: 'You',           role: 'Sales Representative' },
+      { emoji: '👩‍💼', av: 'av-prospect', name: 'Rachel Torres', role: 'Operations Manager, Meridian' }
+    ],
+    body: `Rachel seemed cautiously interested after the demo or meeting. You\'ve sent over a proposal. A week passes with no response. You send a brief check-in and Rachel replies:`,
+    dial: { cls: 'prospect', speaker: 'Rachel Torres', text: '"Sorry for the delay — things have been hectic. We\'re still reviewing it internally."' },
+    question: 'What do you do next?',
+    choices: [
+      {
+        text: 'Schedule a brief call to walk through the proposal together and address any questions in real time.',
+        quality: 'good',
+        feedback: 'Proposal walk-through calls dramatically improve close rates. Reading a document alone never conveys value the way a live conversation does. By offering to review it together, you stay in control of the narrative and can handle objections before they become deal-killers.',
+        next: 'scene5_medium'
+      },
+      {
+        text: 'Send an email: "Just checking in — any decision yet? We have a month-end promotion ending soon."',
+        quality: 'poor',
+        feedback: 'Artificial urgency and "just checking in" emails are two red flags in one message. Prospects see through manufactured deadlines immediately — it signals desperation over partnership. This kind of pressure frequently causes prospects to disengage or choose a more consultative competitor.',
+        next: 'end_poor'
+      }
+    ]
+  },
+
+  // ── Scene 5 — Best path ─────────────────────
+  scene5_good: {
+    tag: 'Scene 5 of 5 — The Close',
+    title: 'David Is Ready to Decide',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',  name: 'You',       role: 'Sales Representative' },
+      { emoji: '👨‍💼', av: 'av-boss', name: 'David Chen', role: 'VP of Operations, Meridian' }
+    ],
+    body: `David has reviewed your custom proposal with Rachel. He\'s impressed by the specificity and the ROI figures. He reaches out for one final conversation before signing.`,
+    dial: { cls: 'boss', speaker: 'David Chen', text: '"The numbers look solid. One last concern — what does onboarding actually look like? My team is already stretched thin and I can\'t afford a three-month implementation."' },
+    question: 'How do you address David\'s final concern?',
+    choices: [
+      {
+        text: 'Outline your structured 4-week onboarding plan and offer to connect him with a reference customer who had the same concern.',
+        quality: 'good',
+        feedback: 'Handling the final objection with specifics and social proof is a masterclass in closing. A reference call removes residual doubt better than any brochure ever could. You\'ve shown empathy for his team\'s bandwidth and backed your claim with real evidence.',
+        next: 'end_best'
+      },
+      {
+        text: 'Tell him onboarding is simple and most customers are up and running in no time — no need to worry.',
+        quality: 'poor',
+        feedback: 'Vague reassurances at the closing stage can unravel an almost-done deal. David asked a specific question — "no need to worry" sounds dismissive and unsubstantiated. Executives need facts at this stage, not comfort.',
+        next: 'end_medium'
+      }
+    ]
+  },
+
+  // ── Scene 5 — Medium path ───────────────────
+  scene5_medium: {
+    tag: 'Scene 5 of 5 — Final Conversation',
+    title: 'Rachel Needs Ammunition',
+    chars: [
+      { emoji: '🧑‍💼', av: 'av-you',      name: 'You',           role: 'Sales Representative' },
+      { emoji: '👩‍💼', av: 'av-prospect', name: 'Rachel Torres', role: 'Operations Manager, Meridian' }
+    ],
+    body: `You\'ve had a proposal review call with Rachel. She has a few questions and seems genuinely interested. However, David hasn\'t been part of this loop. Rachel explains she\'ll need to present the case to him herself.`,
+    dial: { cls: 'prospect', speaker: 'Rachel Torres', text: '"I think I can make the case to David — but can you give me something that would help me convince him on the ROI side?"' },
+    question: 'What do you provide?',
+    choices: [
+      {
+        text: 'Prepare a one-page ROI summary tailored to Meridian\'s numbers and offer to join a call with David if needed.',
+        quality: 'good',
+        feedback: 'Equipping your internal champion with the right tools is smart selling. Rachel can only advocate effectively if she has credible, executive-ready data. Offering to join the executive conversation is the right instinct — it shows commitment to the outcome, not just the commission.',
+        next: 'end_medium'
+      },
+      {
+        text: 'Tell Rachel to forward the original proposal — it has everything David should need.',
+        quality: 'poor',
+        feedback: 'Full proposals sent without context rarely land well with busy executives. David will skim it, miss the key points, and likely say "not a priority right now." You\'ve put Rachel in a tough spot and significantly reduced your chances of closing.',
+        next: 'end_poor'
+      }
+    ]
+  },
+
+  // ── Endings ─────────────────────────────────
+  end_best: {
+    type: 'ending',
+    quality: 'best',
+    icon: '🏆',
+    title: 'Deal Closed — Trusted Partner',
+    sub: 'Meridian Manufacturing signed a 12-month contract.',
+    body: `David signed two days after your final call. Rachel sent a personal note saying your team made the decision easy. AutoFlow is now being implemented across Meridian\'s operations team, and David has already mentioned your name to two contacts in his industry network. Your manager has flagged you as a top performer for Q2.`,
+    scoreLabel: 'Excellent', scoreColor: '#22c55e',
+    lessons: [
+      'Discovery-first selling builds trust and surfaces real, actionable needs.',
+      'Engaging all decision-makers early prevents last-minute blockers.',
+      'Handling objections with curiosity beats defensiveness every time.',
+      'ROI-focused, customized proposals make budget approval straightforward.',
+      'Specific, evidence-backed answers close deals that vague reassurances lose.'
+    ]
+  },
+
+  end_medium: {
+    type: 'ending',
+    quality: 'medium',
+    icon: '📋',
+    title: 'Deal Stalled — Opportunity Remains',
+    sub: 'Meridian is "interested but not ready to commit."',
+    body: `David and Rachel appreciated the product but felt the process was slightly rushed and some of their specific questions went partially unanswered. They\'ve asked to "revisit in Q3." You\'re still in the running — but so are two competitors who\'ve since entered the picture. You need to rebuild momentum fast.`,
+    scoreLabel: 'Needs Improvement', scoreColor: '#f59e0b',
+    lessons: [
+      'Involving all stakeholders early is non-negotiable in B2B sales.',
+      'Customizing every touchpoint — demos, proposals, follow-ups — shows you listened.',
+      'Vague closing answers raise doubt that can stall a nearly-done deal.',
+      'Maintaining momentum requires proactive, value-adding follow-up — not check-ins.',
+      'Recovery is possible: go back, deepen discovery, and re-engage David directly.'
+    ]
+  },
+
+  end_poor: {
+    type: 'ending',
+    quality: 'poor',
+    icon: '❌',
+    title: 'Deal Lost — Relationship Burned',
+    sub: 'Meridian has chosen a competitor.',
+    body: `Rachel sent a polite email saying they decided to go with another vendor. Reading between the lines: the process felt impersonal, the demo wasn\'t relevant to their world, and the follow-up felt pushy. David never warmed up because he was never properly engaged. The deal is closed — to someone else. This account won\'t be re-openable for at least 18 months.`,
+    scoreLabel: 'Significant Work Needed', scoreColor: '#ef4444',
+    lessons: [
+      'Never pitch before you understand the prospect\'s actual pain points.',
+      'Stakeholders who aren\'t engaged become silent, invisible deal-killers.',
+      'Generic demos and proposals signal you stopped listening after the first call.',
+      'Artificial urgency and pressure tactics destroy trust — immediately and permanently.',
+      'Consultative selling — understand first, then recommend — wins consistently.'
+    ]
+  }
+};
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+const state = {
+  current: 'intro',
+  good: 0,
+  poor: 0,
+  total: 0,
+  max: 5
+};
+
+// ─────────────────────────────────────────────
+//  RENDER HELPERS
+// ─────────────────────────────────────────────
+function pct() { return Math.round((state.total / state.max) * 100); }
+
+function updateProgress() {
+  document.getElementById('progressFill').style.width = pct() + '%';
+  document.getElementById('progCount').textContent   = `${state.total} / ${state.max}`;
+  document.getElementById('goodBadge').textContent   = `${state.good} Strong`;
+  document.getElementById('poorBadge').textContent   = `${state.poor} Weak`;
+}
+
+function chars(list) {
+  if (!list || !list.length) return '';
+  return `<div class="characters">${list.map(c => `
+    <div class="char-chip">
+      <div class="char-avatar ${c.av}">${c.emoji}</div>
+      <div>
+        <div class="char-name">${c.name}</div>
+        <div class="char-role">${c.role}</div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function dial(d) {
+  if (!d) return '';
+  return `<div class="dialogue ${d.cls}">
+    <div class="dial-speaker">${d.speaker}</div>
+    ${d.text}
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+//  RENDER SCENE
+// ─────────────────────────────────────────────
+function renderScene(id) {
+  state.current = id;
+  const sc = SCENES[id];
+  const root = document.getElementById('sceneRoot');
+
+  if (sc.type === 'ending') { renderEnding(sc, root); return; }
+
+  const letters = ['A', 'B', 'C'];
+  const isIntro = !!sc.startNext;
+
+  let choicesHtml = '';
+  if (!isIntro) {
+    choicesHtml = `
+      <div class="decision-prompt">What do you do?</div>
+      ${sc.question ? `<p class="decision-question">${sc.question}</p>` : ''}
+      <div class="choices" id="choiceList">
+        ${sc.choices.map((c, i) => `
+          <button class="choice-btn" onclick="choose(${i})" data-idx="${i}">
+            <span class="choice-letter">${letters[i]}</span>
+            <span>${c.text}</span>
+          </button>`).join('')}
+      </div>
+      <div id="feedbackArea"></div>`;
+  }
+
+  root.innerHTML = `
+    <div class="scene-card">
+      <div class="scene-tag">${sc.tag}</div>
+      <h2 class="scene-title">${sc.title}</h2>
+      ${chars(sc.chars)}
+      <p class="narrative">${sc.body}</p>
+      ${dial(sc.dial || null)}
+      ${isIntro
+        ? `<button class="cta-btn" onclick="renderScene('${sc.startNext}')">Begin Scenario →</button>`
+        : choicesHtml}
+    </div>`;
+
+  root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─────────────────────────────────────────────
+//  HANDLE CHOICE
+// ─────────────────────────────────────────────
+function choose(idx) {
+  const sc = SCENES[state.current];
+  const choice = sc.choices[idx];
+
+  state.total++;
+  if (choice.quality === 'good') state.good++; else state.poor++;
+  updateProgress();
+
+  // style buttons
+  document.querySelectorAll('.choice-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === idx) {
+      btn.classList.add(choice.quality === 'good' ? 'selected-good' : 'selected-poor');
+    } else {
+      btn.classList.add('dimmed');
+    }
+  });
+
+  const icon  = choice.quality === 'good' ? '✓' : '✗';
+  const label = choice.quality === 'good' ? 'Effective Choice' : 'Ineffective Choice';
+
+  document.getElementById('feedbackArea').innerHTML = `
+    <div class="feedback-box ${choice.quality}">
+      <div class="feedback-header">${icon} ${label}</div>
+      <p class="feedback-text">${choice.feedback}</p>
+      <button class="cta-btn" onclick="renderScene('${choice.next}')">Continue →</button>
+    </div>`;
+
+  document.getElementById('feedbackArea').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ─────────────────────────────────────────────
+//  RENDER ENDING
+// ─────────────────────────────────────────────
+function renderEnding(sc, root) {
+  document.getElementById('progressWrap').style.opacity = '0.4';
+  document.getElementById('progressWrap').style.pointerEvents = 'none';
+
+  const lessons = sc.lessons.map(l => `<div class="takeaway">${l}</div>`).join('');
+
+  root.innerHTML = `
+    <div class="ending-card">
+      <span class="ending-icon">${sc.icon}</span>
+      <div class="ending-title ${sc.quality}">${sc.title}</div>
+      <p class="ending-sub">${sc.sub}</p>
+
+      <div class="score-row">
+        <div class="score-box">
+          <div class="score-num" style="color:#22c55e">${state.good}</div>
+          <div class="score-desc">Strong Choices</div>
+        </div>
+        <div class="score-box">
+          <div class="score-num" style="color:#ef4444">${state.poor}</div>
+          <div class="score-desc">Weak Choices</div>
+        </div>
+        <div class="score-box">
+          <div class="score-num" style="color:${sc.scoreColor}">${state.good}/${state.total}</div>
+          <div class="score-desc">Score</div>
+        </div>
+      </div>
+
+      <div class="ending-body">${sc.body}</div>
+
+      <div class="takeaways">
+        <div class="takeaways-title">Key Takeaways</div>
+        ${lessons}
+      </div>
+
+      <button class="restart-btn" onclick="restart()">↺ Try Again</button>
+    </div>`;
+
+  root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─────────────────────────────────────────────
+//  RESTART
+// ─────────────────────────────────────────────
+function restart() {
+  state.current = 'intro';
+  state.good = state.poor = state.total = 0;
+  const wrap = document.getElementById('progressWrap');
+  wrap.style.opacity = '1';
+  wrap.style.pointerEvents = 'auto';
+  updateProgress();
+  renderScene('intro');
+}
+
+// ─────────────────────────────────────────────
+//  BOOT
+// ─────────────────────────────────────────────
+updateProgress();
+renderScene('intro');
+</script>
+</body>
+</html>
