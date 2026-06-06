@@ -486,6 +486,100 @@
       .stage-char, .stage-char-empty { display: none; }
       .container { padding: 16px 12px 40px; }
     }
+
+    /* ── Question progress segments ── */
+    .q-segments {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 22px;
+    }
+    .q-seg {
+      flex: 1;
+      height: 5px;
+      border-radius: 99px;
+      background: #e2e8f0;
+    }
+    .q-seg.seg-good   { background: #16a34a; }
+    .q-seg.seg-poor   { background: #b45309; }
+    .q-seg.seg-active { background: #2563eb; }
+
+    /* ── Pending (selected, not yet submitted) ── */
+    .choice-btn.pending {
+      background: #fef9ec;
+      border-color: #d97706;
+    }
+    .choice-btn.pending .choice-letter {
+      background: #d97706;
+      color: #fff;
+    }
+
+    /* ── Quiz footer (back / submit / next) ── */
+    .quiz-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: inherit;
+      transition: color 0.15s;
+    }
+    .back-btn:not([disabled]):hover { color: #1e293b; }
+    .back-btn[disabled] { color: #cbd5e1; cursor: default; }
+    .back-disabled-label {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      font-style: italic;
+    }
+    .submit-btn {
+      background: #cbd5e1;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 22px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: not-allowed;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .submit-btn.ready {
+      background: #7c3aed;
+      cursor: pointer;
+    }
+    .submit-btn.ready:hover { opacity: 0.9; transform: translateY(-1px); }
+    .next-btn {
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 22px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      transition: opacity 0.15s, transform 0.15s;
+      animation: fadeUp 0.3s ease both;
+    }
+    .next-btn:hover { opacity: 0.9; transform: translateY(-1px); }
   </style>
 </head>
 <body>
@@ -841,7 +935,10 @@ const state = {
   good: 0,
   poor: 0,
   total: 0,
-  max: 5
+  max: 5,
+  selectedIdx: null,
+  answers: [],
+  history: []
 };
 
 // ─────────────────────────────────────────────
@@ -857,6 +954,21 @@ const CHAR_IMGS = {
 //  RENDER HELPERS
 // ─────────────────────────────────────────────
 function pct() { return Math.round((state.total / state.max) * 100); }
+
+function generateSegments() {
+  let html = '';
+  for (let i = 0; i < state.max; i++) {
+    if (i < state.total) {
+      const cls = state.answers[i] === 'good' ? 'seg-good' : 'seg-poor';
+      html += `<div class="q-seg ${cls}"></div>`;
+    } else if (i === state.total) {
+      html += `<div class="q-seg seg-active"></div>`;
+    } else {
+      html += `<div class="q-seg"></div>`;
+    }
+  }
+  return html;
+}
 
 function updateProgress() {
   document.getElementById('progressFill').style.width = pct() + '%';
@@ -906,17 +1018,24 @@ function renderScene(id) {
 
   let choicesHtml = '';
   if (!isIntro) {
+    const qNum = state.total + 1;
+    const hasHistory = state.history.length > 0;
     choicesHtml = `
-      <div class="decision-prompt">What do you do?</div>
+      <div class="q-segments">${generateSegments()}</div>
+      <div class="decision-prompt">Question ${qNum} of ${state.max}</div>
       ${sc.question ? `<p class="decision-question">${sc.question}</p>` : ''}
       <div class="choices" id="choiceList">
         ${sc.choices.map((c, i) => `
-          <button class="choice-btn" onclick="choose(${i})" data-idx="${i}">
+          <button class="choice-btn" onclick="selectChoice(${i})" data-idx="${i}">
             <span class="choice-letter">${letters[i]}</span>
             <span>${c.text}</span>
           </button>`).join('')}
       </div>
-      <div id="feedbackArea"></div>`;
+      <div id="feedbackArea"></div>
+      <div class="quiz-footer">
+        <button class="back-btn" id="backBtn" ${hasHistory ? '' : 'disabled'} onclick="goBack()">← Back</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitAnswer()">Submit answer →</button>
+      </div>`;
   }
 
   // Determine side characters
@@ -946,7 +1065,7 @@ function renderScene(id) {
         <p class="narrative">${sc.body}</p>
         ${dial(sc.dial || null)}
         ${isIntro
-          ? `<button class="cta-btn" onclick="renderScene('${sc.startNext}')">Begin Scenario →</button>`
+          ? `<button class="cta-btn" onclick="goNext('${sc.startNext}')">Begin Scenario →</button>`
           : choicesHtml}
       </div>
       ${rightChar ? stageChar(rightChar, 'right') : '<div class="stage-char-empty"></div>'}
@@ -956,37 +1075,76 @@ function renderScene(id) {
 }
 
 // ─────────────────────────────────────────────
-//  HANDLE CHOICE
+//  HANDLE CHOICE — select then submit
 // ─────────────────────────────────────────────
-function choose(idx) {
-  const sc = SCENES[state.current];
-  const choice = sc.choices[idx];
+function selectChoice(idx) {
+  state.selectedIdx = idx;
+  document.querySelectorAll('.choice-btn').forEach((btn, i) => {
+    btn.classList.remove('pending');
+    if (i === idx) btn.classList.add('pending');
+  });
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) submitBtn.classList.add('ready');
+}
+
+function submitAnswer() {
+  if (state.selectedIdx === null) return;
+  const sc    = SCENES[state.current];
+  const choice = sc.choices[state.selectedIdx];
 
   state.total++;
+  state.answers.push(choice.quality);
   if (choice.quality === 'good') state.good++; else state.poor++;
   updateProgress();
 
-  // style buttons
+  // Lock and style choices
   document.querySelectorAll('.choice-btn').forEach((btn, i) => {
     btn.disabled = true;
-    if (i === idx) {
+    btn.classList.remove('pending');
+    if (i === state.selectedIdx) {
       btn.classList.add(choice.quality === 'good' ? 'selected-good' : 'selected-poor');
     } else {
       btn.classList.add('dimmed');
     }
   });
 
-  const icon  = choice.quality === 'good' ? '✓' : '✗';
-  const label = choice.quality === 'good' ? 'Effective Choice' : 'Ineffective Choice';
-
+  // Show feedback
+  const icon  = choice.quality === 'good' ? '✓ Correct' : '✗ Incorrect';
   document.getElementById('feedbackArea').innerHTML = `
-    <div class="feedback-box ${choice.quality}">
-      <div class="feedback-header">${icon} ${label}</div>
+    <div class="feedback-box ${choice.quality}" style="margin-top:16px;">
+      <div class="feedback-header">${icon}</div>
       <p class="feedback-text">${choice.feedback}</p>
-      <button class="cta-btn" onclick="renderScene('${choice.next}')">Continue →</button>
     </div>`;
 
+  // Swap footer: back → disabled label, submit → next
+  document.getElementById('backBtn').outerHTML =
+    '<span class="back-disabled-label">Back disabled during check</span>';
+  document.getElementById('submitBtn').outerHTML =
+    `<button class="next-btn" onclick="goNext('${choice.next}')">Next question →</button>`;
+
+  // Update segment bar to reflect this answer
+  const segs = document.querySelectorAll('.q-seg');
+  if (segs[state.total - 1]) {
+    segs[state.total - 1].className = 'q-seg ' + (choice.quality === 'good' ? 'seg-good' : 'seg-poor');
+  }
+  if (segs[state.total]) {
+    segs[state.total].className = 'q-seg seg-active';
+  }
+
+  state.selectedIdx = null;
   document.getElementById('feedbackArea').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function goNext(sceneId) {
+  state.history.push(state.current);
+  renderScene(sceneId);
+}
+
+function goBack() {
+  if (state.history.length === 0) return;
+  const prev = state.history.pop();
+  // Undo the last unanswered state (back pressed before submitting)
+  renderScene(prev);
 }
 
 // ─────────────────────────────────────────────
@@ -1038,6 +1196,9 @@ function renderEnding(sc, root) {
 function restart() {
   state.current = 'intro';
   state.good = state.poor = state.total = 0;
+  state.selectedIdx = null;
+  state.answers = [];
+  state.history = [];
   const wrap = document.getElementById('progressWrap');
   wrap.style.opacity = '1';
   wrap.style.pointerEvents = 'auto';
