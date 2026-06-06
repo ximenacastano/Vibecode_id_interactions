@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De cero a primer cierre · Onboarding para vendedores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Main backgrounds */
+  --bg:#FBF8F4;
+  --bg-dk:#EDE0D0;
+  --bg-md:#E6D5C0;
+  /* Sidebar */
+  --sb-bg:#ffffff;
+  /* Text */
+  --txt:#2B2723;
+  --txt-md:#5A4A3A;
+  --txt-lt:#8A7A68;
+  --txt-xlt:#B0A090;
+  /* Brand colors */
+  --terra:#b1775a;
+  --terra-lt:#C8977A;
+  --terra-pl:#F7E6D8;
+  --terra-dk:#8A5540;
+  /* Olive — only for highlight numbers, borders, frames */
+  --olive:#6b7152;
+  --olive-lt:#8A9070;
+  --olive-pl:#E2E4D8;
+  /* Sand */
+  --sand:#C4B090;
+  --sand-lt:#E8DCCC;
+  /* Pct highlight */
+  --pct-hl:#F7E6D8;
+  /* Fonts */
+  --ff-head:'Playfair Display',Georgia,serif;
+  --ff-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --sidebar:260px
+}
+body{background:var(--bg);font-family:var(--ff-body);color:var(--txt);font-size:16px;line-height:1.6}
+#app{display:flex;height:100vh;min-height:600px;overflow:hidden}
+
+/* ── SIDEBAR ─────────────────────────────── */
+#sb{width:var(--sidebar);background:var(--sb-bg);border-right:1px solid var(--bg-dk);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;font-size:13px}
+#sb-top{padding:20px 16px 16px;border-bottom:1px solid var(--bg-dk)}
+.sb-ver{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-xlt);margin-bottom:5px;font-weight:600}
+.sb-ttl{font-family:var(--ff-head);font-size:15px;font-weight:500;color:var(--txt);margin-bottom:2px;line-height:1.3}
+.sb-sub{font-size:11px;color:var(--txt-lt);margin-bottom:10px}
+.sb-prog{height:3px;background:var(--bg-dk);border-radius:2px}
+.sb-pfill{height:100%;background:var(--terra);border-radius:2px;transition:width .4s}
+.sb-pct{font-size:10px;color:var(--txt-lt);margin-top:4px}
+.sb-map-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-xlt);padding:14px 16px 5px;font-weight:600}
+.sb-mod{border-bottom:1px solid var(--bg-dk)}
+.sb-mod-hdr{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .15s;user-select:none}
+.sb-mod-hdr:hover{background:var(--bg)}
+.sb-mod-num{width:22px;height:22px;border-radius:50%;background:var(--bg-dk);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--txt-lt);flex-shrink:0;transition:all .2s}
+.sb-mod-num.act{background:var(--terra);color:white}
+.sb-mod-num.done{background:var(--olive);color:white}
+.sb-mod-info{flex:1;min-width:0}
+.sb-mod-name{font-size:13px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-mod-meta{font-size:10px;color:var(--txt-lt);margin-top:1px}
+.sb-chev{font-size:13px;color:var(--txt-xlt);transition:transform .22s;flex-shrink:0}
+.sb-mod.open .sb-chev{transform:rotate(180deg)}
+.sb-slides{display:none;padding:3px 0 8px}
+.sb-mod.open .sb-slides{display:block}
+.sb-slide{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 22px;cursor:pointer;font-size:12px;color:var(--txt-lt);transition:background .12s;line-height:1.4}
+.sb-slide:hover{background:var(--bg)}
+.sb-slide.act{color:var(--terra);font-weight:600;background:var(--terra-pl)}
+.sb-slide.done{color:var(--olive-lt)}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--bg-dk);flex-shrink:0}
+.sb-slide.act .sb-dot{background:var(--terra)}
+.sb-slide.done .sb-dot{background:var(--olive)}
+.sb-bottom{margin-top:auto;border-top:1px solid var(--bg-dk);padding:10px 14px}
+.sb-bot-btn{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt-lt);padding:6px 2px;cursor:pointer;transition:color .15s}
+.sb-bot-btn:hover{color:var(--txt-md)}
+
+/* ── TOPBAR ──────────────────────────────── */
+#tb{height:48px;background:var(--sb-bg);border-bottom:1px solid var(--bg-dk);display:flex;align-items:center;padding:0 28px;gap:12px;flex-shrink:0}
+.tb-lbl{font-size:12px;color:var(--txt-md);font-weight:600;white-space:nowrap;background:var(--pct-hl);border-radius:20px;padding:3px 10px;color:var(--olive)}
+.tb-sect{font-size:12px;color:var(--txt-lt);white-space:nowrap}
+#tb-bw{flex:1;height:4px;background:var(--bg-dk);border-radius:2px}
+#tb-bf{height:100%;background:var(--olive);border-radius:2px;transition:width .4s}
+.tb-pct{font-size:12px;font-weight:600;min-width:42px;text-align:right;background:var(--pct-hl);border-radius:20px;padding:2px 8px;color:var(--olive)}
+.tb-ic{font-size:16px;color:var(--txt-lt);cursor:pointer;padding:4px;opacity:.7}
+.tb-ic:hover{opacity:1}
+/* Welcome greeting top-right */
+#tb-user{display:flex;align-items:center;gap:8px;margin-left:8px}
+#tb-avatar{width:30px;height:30px;border-radius:50%;background:var(--olive);color:white;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#tb-greeting{font-size:12px;color:var(--txt-md);white-space:nowrap;font-weight:500}
+
+/* ── MAIN ────────────────────────────────── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#content{flex:1;overflow-y:auto;padding:44px 60px 36px}
+
+/* ── SHARED TYPOGRAPHY ───────────────────── */
+.mod-tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt);margin-bottom:12px;line-height:1.15}
+.ss{font-size:17px;color:var(--txt-md);line-height:1.65;margin-bottom:32px;max-width:680px}
+
+/* ── WELCOME HERO (Knotty Pines layout) ──── */
+.hero{display:grid;grid-template-columns:1fr 1fr;border-radius:14px;overflow:hidden;margin-bottom:28px;min-height:280px;border:1px solid var(--olive);border-radius:12px}
+.hero-l{background:var(--terra-pl);padding:36px 32px}
+.hero-badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.hero-badge i{font-size:10px;color:var(--terra)}
+.hero-ttl{font-family:var(--ff-head);font-size:26px;font-weight:600;color:var(--txt);margin-bottom:6px;line-height:1.2}
+.hero-sub{font-family:var(--ff-head);font-size:18px;color:var(--terra);margin-bottom:16px;line-height:1.4;font-style:italic}
+.hero-intro{font-size:13px;color:var(--txt-md);margin-bottom:14px}
+.hero-obj-lbl{font-size:11px;font-weight:600;color:var(--txt-md);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
+.hero-obj{list-style:none;font-size:13px;color:var(--txt-md)}
+.hero-obj li{display:flex;gap:10px;margin-bottom:8px;line-height:1.5;align-items:flex-start}
+.hero-obj li .obj-bullet{width:18px;height:18px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.hero-obj li .obj-bullet i{font-size:9px;color:white}
+/* Right side: photo placeholder */
+.hero-r{background:#e8e0d4;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:280px}
+.hero-img-placeholder{width:100%;height:100%;object-fit:cover;display:block}
+.hero-r-overlay{position:absolute;bottom:0;left:0;right:0;padding:18px 20px;background:linear-gradient(to top,rgba(43,39,35,.7) 0%,transparent 100%)}
+.hero-r-caption{color:rgba(255,255,255,.9);font-size:12px;font-weight:500}
+.hero-r-sub{color:rgba(255,255,255,.6);font-size:11px;margin-top:2px}
+
+/* Before begin */
+.bb{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:24px 28px}
+.bb-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px}
+.bb h3{font-family:var(--ff-head);font-size:20px;font-weight:500;margin-bottom:4px}
+.bb p{font-size:14px;color:var(--txt-md);margin-bottom:14px}
+.bb-row{display:flex;gap:12px;align-items:center}
+.bb-row input{flex:1;padding:10px 16px;border:1px solid var(--olive);border-radius:8px;font-size:15px;background:var(--bg);font-family:var(--ff-body);color:var(--txt);outline:none}
+.bb-row input:focus{border-color:var(--terra)}
+.bb-meta{font-size:11px;color:var(--txt-xlt);margin-top:10px}
+
+/* ── CARDS ───────────────────────────────── */
+.cards-g{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.card{background:var(--sb-bg);border:1px solid var(--olive);border-top:3px solid var(--olive);border-radius:10px;padding:22px}
+.card .ctag{font-size:10px;color:var(--txt-xlt);margin-bottom:12px;font-weight:600;letter-spacing:.08em}
+.card i.ci{font-size:28px;color:var(--olive-pl);margin-bottom:14px;display:block;color:var(--olive)}
+.card h4{font-family:var(--ff-head);font-size:16px;font-weight:500;margin-bottom:10px;color:var(--txt)}
+.card p{font-size:14px;color:var(--txt-md);line-height:1.65}
+
+/* ── ACCORDION ───────────────────────────── */
+.acc{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.ai{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;overflow:hidden}
+.ah{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background .15s}
+.ah:hover{background:var(--bg)}
+.aic{width:36px;height:36px;border-radius:50%;background:var(--olive-pl);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--olive);flex-shrink:0}
+.ah h4{font-family:var(--ff-head);font-size:17px;font-weight:500;color:var(--txt);flex:1}
+.ach{font-size:16px;color:var(--txt-xlt);transition:transform .22s}
+.ai.open .ach{transform:rotate(180deg)}
+.ab{display:none;padding:0 20px 20px 70px}
+.ai.open .ab{display:block}
+.ab p{font-size:15px;color:var(--txt-md);line-height:1.7;margin-bottom:12px}
+.ab-ex{background:var(--terra-pl);border-radius:8px;padding:12px 16px;border-left:3px solid var(--terra)}
+.ab-ex .exl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:5px}
+.ab-ex p{font-size:13px;color:var(--txt-md);margin:0;line-height:1.55}
+
+/* ── DRAG DROP ───────────────────────────── */
+.dd-g{display:grid;grid-template-columns:1fr 1.7fr;gap:28px;margin-bottom:24px}
+.dd-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-xlt);font-weight:600;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:var(--olive);color:white;border-radius:20px;padding:9px 18px;font-size:13px;cursor:grab;user-select:none;transition:opacity .2s,transform .15s;font-family:var(--ff-body)}
+.chip:hover{transform:translateY(-2px);opacity:.88}
+.dzones{display:flex;flex-direction:column;gap:10px}
+.dz{background:var(--bg);border:2px dashed var(--olive);border-radius:10px;padding:14px 18px;min-height:56px;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s,background .2s;font-size:14px}
+.dz.over{border-color:var(--olive);background:var(--olive-pl)}
+.dz.ok{border-color:var(--olive);background:#EAEDDF;border-style:solid}
+.dz.no{border-color:var(--terra);background:var(--terra-pl);border-style:solid}
+.dz .dzl{font-style:italic;color:var(--txt-lt)}
+.dz .dzch{background:var(--olive);color:white;border-radius:12px;padding:4px 12px;font-size:12px}
+.dz.no .dzch{background:var(--terra)}
+
+/* ── PROFILE TABS ────────────────────────── */
+.ptabs{display:flex;gap:10px;margin-bottom:24px}
+.ptab{flex:1;border:1px solid var(--olive);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .18s;background:var(--sb-bg)}
+.ptab:hover{background:var(--bg)}
+.ptab.sel{background:var(--txt);border-color:var(--txt)}
+.ptab .ptn{font-family:var(--ff-head);font-size:15px;font-weight:500;color:var(--txt);transition:color .18s}
+.ptab.sel .ptn{color:white}
+.ptab .ptr{font-size:12px;color:var(--txt-lt);margin-top:2px;transition:color .18s}
+.ptab.sel .ptr{color:rgba(255,255,255,.55)}
+
+/* ── PITCH BUILDER ───────────────────────── */
+.pitch-g{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pitch-fields{display:flex;flex-direction:column;gap:12px}
+.pf{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:16px 18px}
+.pf-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.pf-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600}
+.pf-cnt{font-size:11px;color:var(--txt-xlt)}
+.pf textarea{width:100%;border:none;background:transparent;font-family:var(--ff-body);font-size:14px;color:var(--txt);resize:none;outline:none;min-height:68px;line-height:1.6}
+.pf-hint{font-size:12px;color:var(--txt-xlt);font-style:italic;margin-top:6px;line-height:1.5;border-top:1px solid var(--bg-dk);padding-top:6px}
+.pp{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:22px;display:flex;flex-direction:column}
+.pp-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-xlt);font-weight:600;margin-bottom:3px}
+.pp-pname{font-size:11px;color:var(--terra);margin-bottom:14px;font-weight:600}
+.pp-cnt{font-size:11px;color:var(--txt-xlt);margin-bottom:10px}
+.pp-txt{font-family:var(--ff-head);font-size:15px;color:var(--txt-md);line-height:1.85;flex:1;min-height:140px;font-style:italic}
+.pp-ph{color:var(--sand);font-style:italic;font-family:var(--ff-head)}
+.pp-toks{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--bg-dk)}
+.pp-tok{background:var(--bg-dk);border-radius:4px;padding:3px 9px;font-size:10px;color:var(--txt-lt);font-weight:600;letter-spacing:.05em}
+.pp-tok.on{background:var(--olive-pl);color:var(--olive)}
+
+/* ── BRANCHING ───────────────────────────── */
+.persona-row{display:flex;align-items:center;gap:14px;background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:14px 18px;margin-bottom:20px}
+.pav{width:46px;height:46px;border-radius:50%;background:var(--olive);display:flex;align-items:center;justify-content:center;color:white;font-family:var(--ff-head);font-size:16px;font-weight:500;flex-shrink:0}
+.pnm{font-size:15px;font-weight:600;color:var(--txt)}
+.prl{font-size:12px;color:var(--txt-lt)}
+.mbadge{margin-left:auto;background:var(--pct-hl);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--olive);font-weight:600;white-space:nowrap}
+.bubble{background:var(--bg-dk);border-radius:14px 14px 14px 4px;padding:16px 20px;margin-bottom:20px;font-size:15px;color:var(--txt);line-height:1.65}
+.br-prompt{font-size:14px;color:var(--txt-md);margin-bottom:14px;font-weight:600}
+.bropts{display:flex;flex-direction:column;gap:10px}
+.brbtn{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:13px 18px;text-align:left;font-size:14px;cursor:pointer;font-family:var(--ff-body);color:var(--txt);display:flex;gap:12px;align-items:flex-start;transition:all .15s}
+.brbtn:hover{background:var(--bg);border-color:var(--terra)}
+.brltr{width:26px;height:26px;border-radius:6px;background:var(--olive-pl);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--olive);flex-shrink:0;margin-top:1px}
+.brbtn.best{border-color:var(--olive);background:#EAEDDF}
+.brbtn.bad{border-color:var(--terra-lt);background:var(--terra-pl)}
+.brbtn.best .brltr{background:var(--olive);color:white}
+.brbtn.bad .brltr{background:var(--terra);color:white}
+.brfb{border-radius:8px;padding:12px 16px;margin-top:10px;font-size:13px;line-height:1.55}
+.brfb.g{background:#EAEDDF;color:var(--olive);border:1px solid var(--olive-pl)}
+.brfb.b{background:var(--terra-pl);color:var(--terra-dk);border:1px solid #D4A89A}
+
+/* ── QUIZ ────────────────────────────────── */
+.qcard{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:28px}
+.q-meta{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-lt);margin-bottom:14px;font-weight:600}
+.q-txt{font-family:var(--ff-head);font-size:21px;color:var(--txt);margin-bottom:22px;line-height:1.5}
+.qopts{display:flex;flex-direction:column;gap:10px}
+.qo{background:var(--sb-bg);border:1px solid var(--olive);border-radius:8px;padding:13px 18px;cursor:pointer;font-size:15px;font-family:var(--ff-body);color:var(--txt);text-align:left;display:flex;align-items:center;gap:12px;transition:all .15s}
+.qo:hover{background:var(--bg);border-color:var(--terra)}
+.ql{width:28px;height:28px;border-radius:6px;background:var(--olive-pl);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--olive);flex-shrink:0}
+.qo.cor{border-color:var(--olive);background:#EAEDDF}
+.qo.cor .ql{background:var(--olive);color:white}
+.qo.wr{border-color:var(--terra);background:var(--terra-pl)}
+.qo.wr .ql{background:var(--terra);color:white}
+.qfb{border-radius:8px;padding:14px 16px;margin-top:14px;font-size:14px;line-height:1.6}
+.qfb.ok{background:#EAEDDF;color:var(--olive);border:1px solid var(--olive-pl)}
+.qfb.nok{background:var(--terra-pl);color:var(--terra-dk);border:1px solid #D4A89A}
+
+
+/* ── QUIZ: pending selection & confirm button ── */
+.qo.qo-pending{border-color:var(--terra);background:var(--terra-pl)}
+.qo.qo-pending .ql{background:var(--terra);color:white}
+.q-footer{display:flex;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--olive-pl)}
+.q-confirm-btn{background:#c9c5bc;color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:not-allowed;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .15s}
+.q-confirm-btn.ready{background:var(--terra);cursor:pointer}
+.q-confirm-btn.ready:hover{opacity:.9;transform:translateY(-1px)}
+
+/* ── BRANCH/SCENARIO: pending & confirm ── */
+.brbtn.br-pending{border-color:var(--terra)!important;background:var(--terra-pl)!important}
+.brbtn.br-pending .brltr{background:var(--terra)!important;color:white!important}
+.br-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.15)}
+.br-confirm-btn{background:#c9c5bc;color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:not-allowed;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .15s}
+.br-confirm-btn.ready{background:var(--terra);cursor:pointer}
+.br-confirm-btn.ready:hover{opacity:.9;transform:translateY(-1px)}
+.br-next-btn{background:var(--olive);color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
+.br-next-btn:hover{opacity:.88}
+.back-disabled-lbl{font-size:13px;color:rgba(255,255,255,.4);font-style:italic}
+/* ── REFLECT ─────────────────────────────── */
+.rcard{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:26px}
+.rcard p{font-size:15px;color:var(--txt-md);margin-bottom:18px;line-height:1.65}
+.rcard textarea{width:100%;min-height:120px;border:1px solid var(--olive);border-radius:8px;padding:14px;font-size:15px;font-family:var(--ff-body);color:var(--txt);background:var(--bg);resize:vertical;outline:none;line-height:1.6}
+.rcard textarea:focus{border-color:var(--terra)}
+
+/* ── STEPS ───────────────────────────────── */
+.slist{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.sitem{display:flex;gap:16px;background:var(--olive);border-radius:12px;padding:18px 22px}
+.snum{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:600;flex-shrink:0;margin-top:2px}
+.sitem h5{font-family:var(--ff-head);font-size:15px;font-weight:500;color:white;margin-bottom:5px}
+.sitem p{font-size:13px;color:rgba(255,255,255,.75);line-height:1.55}
+
+/* ── PIPELINE ────────────────────────────── */
+.pipe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.pipe-card{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:18px;cursor:pointer;transition:all .18s}
+.pipe-card:hover{background:var(--bg)}
+.pipe-card.sel{border-color:var(--terra);background:var(--terra-pl)}
+.pipe-num{width:28px;height:28px;border-radius:6px;background:var(--olive);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;margin-bottom:10px}
+.pipe-card.sel .pipe-num{background:var(--terra)}
+.pipe-card h5{font-family:var(--ff-head);font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
+.pipe-card p{font-size:12px;color:var(--txt-lt);line-height:1.5}
+.pipe-detail{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:22px;margin-bottom:20px;min-height:80px}
+.pipe-detail-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:12px}
+.pipe-detail h4{font-family:var(--ff-head);font-size:18px;font-weight:500;margin-bottom:10px}
+.pipe-detail p{font-size:14px;color:var(--txt-md);line-height:1.65;margin-bottom:8px}
+.pipe-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pipe-chip{background:var(--bg-dk);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--txt-md)}
+
+/* ── SCENARIO ────────────────────────────── */
+.sc-wrap{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.sc-head{background:var(--olive);padding:20px 24px;display:flex;align-items:center;gap:14px}
+.sc-av{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:white;font-family:var(--ff-head);font-size:16px;font-weight:500;flex-shrink:0}
+.sc-nm{font-family:var(--ff-head);font-size:16px;color:white;font-weight:500}
+.sc-rl{font-size:12px;color:rgba(255,255,255,.65)}
+.sc-body{padding:22px 24px}
+.sc-scene{font-size:15px;color:var(--txt-md);line-height:1.65;margin-bottom:18px;font-style:italic;border-left:3px solid var(--terra);padding-left:16px}
+.sc-q{font-size:15px;font-weight:600;color:var(--txt);margin-bottom:16px}
+
+/* ── COMPLETE ────────────────────────────── */
+.done-wrap{text-align:center;padding:60px 32px}
+.done-icon{font-size:64px;color:var(--terra);margin-bottom:24px}
+.done-wrap h2{font-family:var(--ff-head);font-size:34px;font-weight:500;margin-bottom:14px;color:var(--txt)}
+.done-wrap p{font-size:16px;color:var(--txt-md);margin-bottom:28px;line-height:1.65;max-width:520px;margin-left:auto;margin-right:auto}
+.done-bgs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.dbg{background:var(--olive-pl);color:var(--olive);border-radius:20px;padding:7px 18px;font-size:13px;font-weight:600}
+
+/* ── FOOTER NAV ──────────────────────────── */
+#fn{background:var(--sb-bg);border-top:1px solid var(--bg-dk);padding:16px 60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.fn-meta{font-size:13px;color:var(--txt-lt);display:flex;align-items:center;gap:6px}
+.btn{padding:11px 26px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--ff-body);transition:all .15s}
+.btn-p{background:var(--terra);color:white}
+.btn-p:hover{background:var(--terra-dk)}
+.btn-s{background:transparent;color:var(--txt-md);border:1px solid var(--olive)}
+.btn-s:hover{background:var(--bg)}
+.btn-sv{background:var(--olive);color:white}
+.btn-sv:hover{background:#525840}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SIDEBAR -->
+<div id="sb">
+  <div id="sb-top">
+    <div class="sb-ver">Onboarding · V 1.0</div>
+    <div class="sb-ttl">De cero a primer cierre</div>
+    <div class="sb-sub">Onboarding para vendedores de automatización</div>
+    <div class="sb-prog"><div class="sb-pfill" id="sb-pf" style="width:0%"></div></div>
+    <div class="sb-pct" id="sb-pc">0%</div>
+  </div>
+  <div class="sb-map-lbl">Mapa del curso</div>
+  <div id="sb-nav"></div>
+  <div class="sb-bottom">
+    <div class="sb-bot-btn"><i class="ti ti-settings" style="font-size:13px"></i> Configuración</div>
+    <div class="sb-bot-btn" onclick="goTo(0)"><i class="ti ti-refresh" style="font-size:13px"></i> Reiniciar curso</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="tb">
+    <span class="tb-lbl" id="tb-lbl">01 / 14</span>
+    <span class="tb-sect" id="tb-sect"></span>
+    <div id="tb-bw"><div id="tb-bf" style="width:0%"></div></div>
+    <span class="tb-pct" id="tb-pct">0%</span>
+    <i class="ti ti-moon tb-ic"></i>
+    <i class="ti ti-maximize tb-ic"></i>
+    <div id="tb-user">
+      <div id="tb-avatar">S</div>
+      <span id="tb-greeting">Bienvenido/a</span>
+    </div>
+  </div>
+  <div id="content"></div>
+  <div id="fn">
+    <button class="btn btn-s" id="btn-back" onclick="nav(-1)">← Anterior</button>
+    <div class="fn-meta" id="fn-hint"></div>
+    <button class="btn btn-p" id="btn-next" onclick="nav(1)">Siguiente →</button>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+const MODS=[
+  {num:'01',name:'¿Qué vendemos?',dur:'60 min',slides:[
+    {id:'w',lbl:'Bienvenida',t:'welcome'},
+    {id:'1.01',lbl:'El primer paso para vender',t:'cards'},
+    {id:'1.05',lbl:'¿Qué no es automatización?',t:'acc_dif'},
+    {id:'1.07',lbl:'Servicio → Problema',t:'dragdrop'},
+    {id:'1.11',lbl:'Verifica tu comprensión',t:'quiz1'}
+  ]},
+  {num:'02',name:'Conoce a tu cliente',dur:'75 min',slides:[
+    {id:'2.03',lbl:'Buyer personas: Laura, Diego, Paola',t:'cards_bp'},
+    {id:'2.08',lbl:'El modelo SPIN',t:'acc_spin'},
+    {id:'2.10',lbl:'Simula la primera llamada',t:'branch'}
+  ]},
+  {num:'03',name:'El discurso de ventas',dur:'90 min',slides:[
+    {id:'3.02',lbl:'¿Cómo suenan tus 60 segundos?',t:'reflect'},
+    {id:'3.07',lbl:'Construye tu pitch',t:'pitch'}
+  ]},
+  {num:'04',name:'El proceso comercial',dur:'75 min',slides:[
+    {id:'4.01',lbl:'El pipeline de la agencia',t:'pipeline'},
+    {id:'4.08',lbl:'La propuesta: estructura y lógica',t:'acc_prop'},
+    {id:'4.11',lbl:'Verifica tu comprensión',t:'quiz4'}
+  ]},
+  {num:'05',name:'Cierre, handoff y éxito del cliente',dur:'60 min',slides:[
+    {id:'5.04',lbl:'Señales de compra',t:'acc_signals'},
+    {id:'5.06',lbl:'El handoff: sin fricciones',t:'steps'},
+    {id:'5.07',lbl:'Simula el cierre',t:'scenario_close'},
+    {id:'5.11',lbl:'¡Completado!',t:'complete'}
+  ]}
+];
+const flat=[];
+MODS.forEach((m,mi)=>m.slides.forEach((s,si)=>flat.push({...s,mi,si})));
+const TOT=flat.length;
+let cur=0,done=new Set(),uname='',qAns=false,brStep=0,
+    pData={L:{g:'',p:'',c:'',pr:''},D:{g:'',p:'',c:'',pr:''},Pa:{g:'',p:'',c:'',pr:''}},
+    aprof='L',pipeSelIdx=null,scStep=0;
+
+function pct(){return Math.round((done.size/(TOT-1))*100)}
+
+function updateGreeting(){
+  const av=document.getElementById('tb-avatar');
+  const gr=document.getElementById('tb-greeting');
+  if(uname){
+    av.textContent=uname.charAt(0).toUpperCase();
+    gr.textContent='Bienvenido/a, '+uname;
+  } else {
+    av.textContent='S';
+    gr.textContent='Bienvenido/a';
+  }
+}
+
+function buildSb(){
+  const nav=document.getElementById('sb-nav');nav.innerHTML='';
+  MODS.forEach((m,mi)=>{
+    const ms=flat.filter(s=>s.mi===mi);
+    const mStart=flat.findIndex(s=>s.mi===mi);
+    const isAct=cur>=mStart&&cur<mStart+ms.length;
+    const isDone=ms.every((_,si)=>done.has(mStart+si));
+    const div=document.createElement('div');
+    div.className='sb-mod'+(isAct?' open':'');
+    div.innerHTML=`<div class="sb-mod-hdr" onclick="this.parentElement.classList.toggle('open')">
+      <div class="sb-mod-num${isDone?' done':isAct?' act':''}">${m.num}</div>
+      <div class="sb-mod-info">
+        <div class="sb-mod-name">${m.name}</div>
+        <div class="sb-mod-meta">${m.dur} · ${[...done].filter(d=>d>=mStart&&d<mStart+ms.length).length}/${ms.length}</div>
+      </div>
+      <i class="ti ti-chevron-down sb-chev"></i></div>
+      <div class="sb-slides">${ms.map((s,si)=>{const gi=mStart+si;const isA=gi===cur;const isD=done.has(gi);
+        return`<div class="sb-slide${isA?' act':isD?' done':''}" onclick="goTo(${gi})"><div class="sb-dot"></div>${s.lbl}</div>`;
+      }).join('')}</div>`;
+    nav.appendChild(div);
+  });
+  const p=pct();
+  document.getElementById('sb-pf').style.width=p+'%';
+  document.getElementById('sb-pc').textContent=p+'%';
+}
+
+function updateTb(){
+  const s=flat[cur];const m=MODS[s.mi];
+  document.getElementById('tb-lbl').textContent=String(cur+1).padStart(2,'0')+' / '+TOT;
+  document.getElementById('tb-sect').textContent=m?'Módulo '+m.num+' / '+m.name:'';
+  const p=pct();
+  document.getElementById('tb-bf').style.width=p+'%';
+  document.getElementById('tb-pct').textContent=p+'%';
+  document.getElementById('btn-back').disabled=cur===0;
+  document.getElementById('btn-back').style.opacity=cur===0?'0.3':'1';
+  document.getElementById('btn-next').style.display=flat[cur].t==='complete'?'none':'';
+  updateGreeting();
+}
+
+function goTo(i){cur=i;qAns=false;brStep=0;pipeSelIdx=null;scStep=0;render();}
+function nav(d){
+  if(d===1&&cur<TOT-1){done.add(cur);cur++;qAns=false;brStep=0;pipeSelIdx=null;scStep=0;render();}
+  else if(d===-1&&cur>0){cur--;qAns=false;brStep=0;pipeSelIdx=null;scStep=0;render();}
+}
+function resetNextBtn(){
+  const nb=document.getElementById('btn-next');nb.disabled=false;nb.style.opacity='1';
+}
+
+function render(){
+  buildSb();updateTb();
+  const s=flat[cur];
+  const el=document.getElementById('content');
+  const hint=document.getElementById('fn-hint');
+  hint.textContent='';el.innerHTML='';el.scrollTop=0;
+  const R={welcome,cards,acc_dif,dragdrop,quiz1,cards_bp,acc_spin,branch,reflect,pitch,pipeline,acc_prop,quiz4,acc_signals,steps,scenario_close,complete};
+  R[s.t](el,s,hint);
+}
+
+function modTag(mi){const m=MODS[mi];return'<div class="mod-tag"><i class="ti ti-chevron-right"></i>MÓDULO '+m.num+' · '+m.name.toUpperCase()+'</div>';}
+function t(p,i){document.getElementById(p+'-'+i).classList.toggle('open');}
+
+// ── SLIDES ────────────────────────────────────────────────
+
+function welcome(el){
+  el.innerHTML=`
+    <div class="hero">
+      <!-- LEFT: text content -->
+      <div class="hero-l">
+        <div class="hero-badge"><i class="ti ti-bolt"></i>Curso · Onboarding</div>
+        <div class="hero-ttl">De cero a primer cierre</div>
+        <div class="hero-sub">Onboarding para vendedores<br>de automatización</div>
+        <p class="hero-intro">Al finalizar este entrenamiento, serás capaz de gestionar el ciclo completo de ventas con comprensión del producto y dominio del discurso técnico-comercial.</p>
+        <div class="hero-obj-lbl">Al finalizar podrás:</div>
+        <ul class="hero-obj">
+          <li><span class="obj-bullet"><i class="ti ti-check"></i></span>Explicar automatización sin tecnicismos</li>
+          <li><span class="obj-bullet"><i class="ti ti-check"></i></span>Identificar perfiles de cliente y sus dolores reales</li>
+          <li><span class="obj-bullet"><i class="ti ti-check"></i></span>Construir un pitch adaptado por perfil</li>
+          <li><span class="obj-bullet"><i class="ti ti-check"></i></span>Dominar el proceso comercial y el CRM</li>
+          <li><span class="obj-bullet"><i class="ti ti-check"></i></span>Cerrar con confianza y ejecutar el handoff</li>
+        </ul>
+      </div>
+      <!-- RIGHT: photo placeholder -->
+      <div class="hero-r">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#d4c8ba 0%,#c0b4a4 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px">
+          <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center">
+            <i class="ti ti-users" style="font-size:36px;color:rgba(255,255,255,.7)"></i>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:13px;color:rgba(255,255,255,.8);font-weight:600">Foto del equipo / instructor</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:4px">Reemplaza con una imagen real</div>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:8px">
+            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:rgba(255,255,255,.85)">6–8</div><div style="font-size:10px;color:rgba(255,255,255,.55)">horas</div></div>
+            <div style="width:1px;background:rgba(255,255,255,.2)"></div>
+            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:rgba(255,255,255,.85)">5</div><div style="font-size:10px;color:rgba(255,255,255,.55)">módulos</div></div>
+            <div style="width:1px;background:rgba(255,255,255,.2)"></div>
+            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:rgba(255,255,255,.85)">54</div><div style="font-size:10px;color:rgba(255,255,255,.55)">slides</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Before begin -->
+    <div class="bb">
+      <div class="bb-lbl">Antes de comenzar</div>
+      <h3>¿Cuál es tu nombre?</h3>
+      <p>Lo usaremos para personalizar el curso y tu certificado al finalizar.</p>
+      <div class="bb-row">
+        <input id="ni" type="text" placeholder="Escribe tu nombre aquí" value="${uname}"/>
+        <button class="btn btn-p" onclick="saveN()">Comenzar entrenamiento →</button>
+      </div>
+      <div class="bb-meta">Duración estimada · 6–8 horas · Vendedores B2B nuevos en automatización</div>
+    </div>`;
+}
+function saveN(){
+  const v=document.getElementById('ni').value.trim();
+  if(v){uname=v;updateGreeting();nav(1);}
+}
+
+function cards(el){
+  el.innerHTML=modTag(0)+`<h1 class="st">El primer paso para vender es entender</h1>
+    <p class="ss">Tu cliente tiene 40 personas procesando cotizaciones a mano. Tú eres quien puede cambiar eso — pero primero tienes que entender qué le vas a vender.</p>
+    <div class="cards-g">
+      <div class="card"><div class="ctag">Card 1 de 3</div><i class="ti ti-robot ci"></i><h4>El problema real</h4><p>El tiempo que los equipos operativos dedican a tareas repetitivas es el costo invisible que nadie calcula — hasta que llega alguien que sí lo hace.</p></div>
+      <div class="card"><div class="ctag">Card 2 de 3</div><i class="ti ti-currency-dollar ci"></i><h4>Lo que vendemos</h4><p>No vendemos software — vendemos tiempo recuperado, errores eliminados y procesos que funcionan solos. Esa es la conversación que tienes que tener.</p></div>
+      <div class="card"><div class="ctag">Card 3 de 3</div><i class="ti ti-bulb ci"></i><h4>Tu ventaja</h4><p>Cuando entiendes el producto mejor que nadie, cada conversación se convierte en una demostración de confianza antes de cerrar cualquier trato.</p></div>
+    </div>`;
+}
+
+function acc_dif(el){
+  const its=[
+    {ic:'ti-robot',t:'Automatización',b:'Tomamos procesos que ya existen y los ponemos a correr solos. No construimos sistemas desde cero — conectamos lo que ya tienes y eliminamos el trabajo manual en el medio.',ex:'"Conectamos tu CRM con tu sistema de facturación para que las facturas salgan solas cuando el vendedor gana un deal."'},
+    {ic:'ti-code',t:'Software a medida',b:'Un desarrollador construye una aplicación específica desde cero. Demora meses, cuesta más, y necesita mantenimiento técnico constante. Nosotros no desarrollamos software — lo conectamos.',ex:'"Quiero una app propia para mi empresa" → Eso es software a medida. Diferente a lo que ofrecemos.'},
+    {ic:'ti-presentation',t:'Consultoría TI',b:'Alguien analiza tu empresa y te dice qué deberías hacer. Nosotros no decimos qué hacer — lo implementamos. La diferencia entre un consejo y un resultado.',ex:'"Les recomendamos implementar un ERP" → Consultoría. "Conectamos tu ERP con tu proceso de pedidos" → Automatización.'}
+  ];
+  el.innerHTML=modTag(0)+`<h1 class="st">¿Qué NO es automatización?</h1>
+    <p class="ss">Hay tres cosas con las que nos confunden seguido. Abre cada una para ver por qué son distintas.</p>
+    <div class="acc">${its.map((it,i)=>`<div class="ai" id="ad-${i}"><div class="ah" onclick="t('ad',${i})"><div class="aic"><i class="ti ${it.ic}"></i></div><h4>${it.t}</h4><i class="ti ti-chevron-down ach"></i></div><div class="ab"><p>${it.b}</p><div class="ab-ex"><div class="exl">Ejemplo</div><p>${it.ex}</p></div></div></div>`).join('')}</div>`;
+}
+
+function dragdrop(el,s,hint){
+  const svcs=['Automatización de emails','Integración de sistemas','Reportes automáticos','Onboarding de clientes'];
+  const probs=[{lbl:'Clientes sin respuesta oportuna',ok:'Automatización de emails'},{lbl:'Datos duplicados entre plataformas',ok:'Integración de sistemas'},{lbl:'Horas perdidas en Excel manual',ok:'Reportes automáticos'},{lbl:'Nuevos clientes sin proceso claro',ok:'Onboarding de clientes'}];
+  window._dst={};
+  el.innerHTML=modTag(0)+`<h1 class="st">Servicio → Problema: ¡practícalo!</h1>
+    <p class="ss">Cada servicio nació de un problema real. Arrastra el servicio al problema que resuelve.</p>
+    <div class="dd-g">
+      <div><div class="dd-lbl">Servicios</div><div class="chips">${svcs.map(sv=>`<div class="chip" draggable="true" data-sv="${sv}" ondragstart="event.dataTransfer.setData('text',event.target.dataset.sv)">${sv}</div>`).join('')}</div></div>
+      <div><div class="dd-lbl">Problemas de negocio</div><div class="dzones">${probs.map((p,i)=>`<div class="dz" id="dz-${i}" data-ok="${p.ok}" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dDrop(event,${i})"><span class="dzl">${p.lbl}</span><span class="dzch" style="display:none"></span></div>`).join('')}</div></div>
+    </div>
+    <div id="ddres" style="font-size:14px;font-weight:600;margin-top:8px"></div>`;
+  window.dDrop=(e,i)=>{
+    e.preventDefault();const dz=document.getElementById('dz-'+i);dz.classList.remove('over');
+    const sv=e.dataTransfer.getData('text');const ch=dz.querySelector('.dzch'),lb=dz.querySelector('.dzl');
+    ch.textContent=sv;ch.style.display='inline-block';lb.style.opacity='.4';
+    dz.classList.remove('ok','no');dz.classList.add(sv===dz.dataset.ok?'ok':'no');
+    window._dst[i]=sv===dz.dataset.ok;
+    if(Object.keys(window._dst).length===4){const all=Object.values(window._dst).every(Boolean);const r=document.getElementById('ddres');r.textContent=all?'¡Perfecto! Todos en el lugar correcto.':'Algunos no coinciden — inténtalo de nuevo.';r.style.color=all?'var(--olive)':'var(--terra)';}
+  };
+}
+
+function renderQuiz(el,mi,q,hint){
+  const nb=document.getElementById('btn-next');
+  if(!qAns){nb.disabled=true;nb.style.opacity='0.35';}
+  el.innerHTML=modTag(mi)+`<h1 class="st">Verifica tu comprensión</h1>
+    <p class="ss">Antes de avanzar, comprueba qué tan sólido tienes esto.</p>
+    <div class="qcard">
+      <div class="q-meta">PREGUNTA 1 DE 2</div>
+      <div class="q-txt">${q.txt}</div>
+      <div class="qopts">${q.opts.map((o,i)=>`<button class="qo" id="qo-${i}" onclick="selQ(${i})"><div class="ql">${String.fromCharCode(65+i)}</div>${o}</button>`).join('')}</div>
+      <div id="qfb" style="display:none"></div>
+      <div class="q-footer">
+        <button class="q-confirm-btn" id="q-confirm" onclick="ansQ(${q.cor},\`${q.ok}\`,\`${q.nok}\`)">Confirmar respuesta →</button>
+      </div>
+    </div>`;
+  if(!qAns)hint.innerHTML='<i class="ti ti-info-circle"></i> Selecciona una respuesta';
+  window._qSel=null;
+  window.selQ=(i)=>{
+    window._qSel=i;
+    document.querySelectorAll('.qo').forEach((b,j)=>{b.classList.remove('qo-pending');if(j===i)b.classList.add('qo-pending');});
+    const cb=document.getElementById('q-confirm');cb.classList.add('ready');
+  };
+  window.ansQ=(cor,ok,nok)=>{
+    if(window._qSel===null||qAns)return;qAns=true;
+    const ch=window._qSel;const isOk=ch===cor;
+    document.querySelectorAll('.qo').forEach(b=>{b.disabled=true;b.classList.remove('qo-pending');});
+    document.getElementById('qo-'+ch).classList.add(isOk?'cor':'wr');
+    if(!isOk)document.getElementById('qo-'+cor).classList.add('cor');
+    const fb=document.getElementById('qfb');fb.className='qfb '+(isOk?'ok':'nok');fb.textContent=isOk?ok:nok;fb.style.display='block';
+    document.getElementById('q-confirm').style.display='none';
+    hint.innerHTML='';nb.disabled=false;nb.style.opacity='1';
+  };
+}
+function quiz1(el,s,hint){renderQuiz(el,0,{txt:'Un cliente dice: "Quiero que me construyan un sistema de ventas desde cero." ¿Cuál es la respuesta más honesta y efectiva?',opts:['Perfecto, podemos hacer eso.','Eso es desarrollo a medida; nosotros automatizamos procesos que ya existen en tu empresa.','No es nuestro servicio — llama a otro.','Depende del presupuesto que tengas disponible.'],cor:1,ok:'Exacto. Identificar cuándo el cliente pide algo fuera de tu alcance te ahorra tiempo y proyecta honestidad.',nok:'Revisa la diferencia entre automatización y desarrollo a medida. El cliente describe una construcción desde cero.'},hint);}
+function quiz4(el,s,hint){renderQuiz(el,3,{txt:'¿En qué etapa del pipeline es más apropiado preguntar por el presupuesto disponible?',opts:['En el primer contacto, para no perder tiempo si no hay presupuesto.','Después de la reunión de descubrimiento, cuando ya entiendes el problema.','Al enviar la propuesta, como parte del documento.','Nunca — el cliente siempre lo dice solo si está interesado.'],cor:1,ok:'Correcto. Después del descubrimiento, el cliente ya siente el costo del problema — la conversación de precio cambia.',nok:'En el primer contacto es demasiado pronto. El momento ideal es después del descubrimiento.'},hint);}
+
+function cards_bp(el){
+  el.innerHTML=modTag(1)+`<h1 class="st">Tres personas, tres mundos</h1>
+    <p class="ss">Estos son los perfiles de cliente que más vas a encontrar. Cuanto más rápido los reconozcas, más fácil adaptar tu conversación desde el primer minuto.</p>
+    <div class="cards-g">
+      <div class="card"><div class="ctag">Perfil 1 de 3</div><i class="ti ti-building-factory ci"></i><h4>Laura — Gerente de Operaciones</h4><p>Empresas medianas, logística o manufactura. Le interesa el resultado, no la tecnología. Habla de tiempo ahorrado, errores eliminados y costos reducidos.</p></div>
+      <div class="card"><div class="ctag">Perfil 2 de 3</div><i class="ti ti-briefcase ci"></i><h4>Diego — Dueño de PYME</h4><p>8-25 personas. Su mayor dolor: el negocio depende de él. Quiere independencia y escala sin contratar más. Habla de control y tiempo recuperado.</p></div>
+      <div class="card"><div class="ctag">Perfil 3 de 3</div><i class="ti ti-chart-arrows-vertical ci"></i><h4>Paola — Directora Comercial</h4><p>Equipos de ventas o marketing. Quiere que su equipo venda más sin contratar más. Habla de conversión, velocidad de respuesta y liberación del equipo.</p></div>
+    </div>`;
+}
+
+function acc_spin(el){
+  const its=[
+    {ic:'ti-map',t:'S — Situación',b:'Ubican el contexto del cliente. Preguntas sobre su empresa, equipo y procesos actuales. Investiga lo que puedas antes, pregunta lo que no puedas saber.',ex:'"¿Cuántas personas tiene su equipo de operaciones y qué herramientas usan hoy para gestionar pedidos?"'},
+    {ic:'ti-alert-circle',t:'P — Problema',b:'Revelan el dolor. Buscan las fricciones, ineficiencias y puntos de quiebre. El cliente dice lo que le molesta — tu trabajo es escuchar con precisión y sin interrumpir.',ex:'"¿Cuáles son los procesos que más tiempo les consumen? ¿Dónde ocurren más errores?"'},
+    {ic:'ti-arrows-right',t:'I — Implicación',b:'Hacen que el cliente sienta el costo de no actuar. Son las preguntas más poderosas del modelo. El cliente conecta el problema con sus consecuencias reales de negocio.',ex:'"¿Eso cuánto les está costando en tiempo del equipo? ¿Cómo afecta la relación con sus clientes?"'},
+    {ic:'ti-key',t:'N — Necesidad',b:'Abren la puerta a la solución. El cliente describe en sus propias palabras lo que necesita. En este momento — y no antes — es cuando propones tu solución.',ex:'"¿Qué tan urgente es para ustedes resolver esto? ¿Qué cambiaría si lo tuvieran automatizado?"'}
+  ];
+  el.innerHTML=modTag(1)+`<h1 class="st">El modelo SPIN</h1>
+    <p class="ss">Cuatro tipos de preguntas. Cada una cumple una función distinta en la conversación de descubrimiento.</p>
+    <div class="acc">${its.map((it,i)=>`<div class="ai" id="as-${i}"><div class="ah" onclick="t('as',${i})"><div class="aic"><i class="ti ${it.ic}"></i></div><h4>${it.t}</h4><i class="ti ti-chevron-down ach"></i></div><div class="ab"><p>${it.b}</p><div class="ab-ex"><div class="exl">Ejemplo real</div><p>${it.ex}</p></div></div></div>`).join('')}</div>`;
+}
+
+function branch(el,s,hint){
+  const moms=[
+    {bbl:'"Venimos creciendo y los procesos se nos están complicando."',pr:'¿Qué preguntas haces ahora?',opts:[
+      {t:'¿Han pensado en contratar más personal?',q:'bad',fb:'Cierra hacia recursos humanos, alejándose del problema operativo real.'},
+      {t:'¿Cuáles son los procesos que más tiempo les consumen hoy?',q:'best',fb:'Pregunta de Situación/Problema — ubica el contexto sin precipitarte a proponer nada.'},
+      {t:'¿Cuánto presupuesto tienen para esto?',q:'bad',fb:'Demasiado pronto. Preguntar por presupuesto antes de entender el problema genera frialdad.'},
+      {t:'Les puedo mostrar lo que hacemos en la agencia…',q:'bad',fb:'Estás proponiendo antes de entender. El cliente todavía no siente que le hablas de su problema.'}
+    ]},
+    {bbl:'"El área de logística tarda dos días en confirmar entregas. Todo se hace por WhatsApp y a veces se pierden mensajes."',pr:'¿Qué haces ahora?',opts:[
+      {t:'Eso lo podemos automatizar fácilmente.',q:'bad',fb:'Propones antes de tiempo. Todavía no sabes el impacto real del problema.'},
+      {t:'¿Cuántos clientes les contactan por esa vía al día?',q:'bad',fb:'Útil para contexto, pero no lleva al dolor. Necesitas que Carlos sienta el costo.'},
+      {t:'¿Eso les ha generado problemas con sus clientes?',q:'best',fb:'Pregunta de Implicación — hace que Carlos conecte el proceso roto con consecuencias reales.'},
+      {t:'¿Cuánto tiempo llevan trabajando así?',q:'bad',fb:'Pregunta de situación — da contexto pero no avanza hacia el dolor ni la urgencia.'}
+    ]}
+  ];
+  const m=moms[Math.min(brStep,moms.length-1)];
+  el.innerHTML=modTag(1)+`<h1 class="st">Simula la primera llamada</h1>
+    <p class="ss">Carlos Méndez, Gerente de Operaciones, distribuidora de alimentos. Te dio 10 minutos.</p>
+    <div class="persona-row"><div class="pav">CM</div><div><div class="pnm">Carlos Méndez</div><div class="prl">Gerente de Operaciones · Distribuidora de alimentos · 35 personas</div></div><div class="mbadge">Momento ${brStep+1} de ${moms.length}</div></div>
+    <div class="bubble">${m.bbl}</div><div class="br-prompt">${m.pr}</div>
+    <div class="bropts">${m.opts.map((o,i)=>`<button class="brbtn" id="bb-${i}" onclick="brAns(${i})"><div class="brltr">${String.fromCharCode(65+i)}</div>${o.t}</button>`).join('')}</div>
+    <div id="brfb"></div>`;
+  // Disable Siguiente until all moments completed
+  const nb=document.getElementById('btn-next');
+  if(brStep===0){nb.disabled=true;nb.style.opacity='0.35';}
+  // Add footer with confirm button
+  el.querySelector('.bropts').insertAdjacentHTML('afterend',
+    `<div id="brfb"></div>
+     <div class="br-footer">
+       <span class="back-disabled-lbl" id="br-back-lbl"></span>
+       <button class="br-confirm-btn" id="br-confirm" onclick="brConfirm()">Confirmar →</button>
+     </div>`);
+  window._brSel=null;
+  window.brAns=(i)=>{
+    window._brSel=i;
+    document.querySelectorAll('.brbtn').forEach((b,j)=>{b.classList.remove('br-pending');if(j===i)b.classList.add('br-pending');});
+    document.getElementById('br-confirm').classList.add('ready');
+  };
+  window.brConfirm=()=>{
+    if(window._brSel===null)return;
+    const i=window._brSel;const o=m.opts[i];
+    document.querySelectorAll('.brbtn').forEach(b=>{b.disabled=true;b.classList.remove('br-pending');});
+    document.getElementById('bb-'+i).classList.add(o.q==='best'?'best':'bad');
+    m.opts.forEach((x,j)=>{if(x.q==='best')document.getElementById('bb-'+j).classList.add('best');});
+    document.getElementById('brfb').innerHTML=`<div class="brfb ${o.q==='best'?'g':'b'}">${o.fb}</div>`;
+    document.getElementById('br-back-lbl').textContent='Continuar deshabilitado';
+    if(brStep<moms.length-1){
+      document.getElementById('br-confirm').outerHTML=`<button class="br-next-btn" onclick="brNext()">Siguiente momento →</button>`;
+    } else {
+      document.getElementById('br-confirm').style.display='none';
+      nb.disabled=false;nb.style.opacity='1';
+    }
+  };
+  window.brNext=()=>{brStep++;render();};
+}
+
+function reflect(el){
+  el.innerHTML=modTag(2)+`<h1 class="st">¿Cómo suenan tus 60 segundos?</h1>
+    <p class="ss">Antes de que te enseñe nada, escribe tu pitch actual. No hay respuesta mala — es simplemente desde dónde partes hoy.</p>
+    <div class="rcard"><p>Esta es tu línea de base. Al final del módulo vas a comparar este pitch con el que construyas usando la estructura. La distancia entre los dos es lo que aprendiste.</p>
+    <textarea id="rta" placeholder="Escribe aquí tu pitch de 60 segundos..."></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+      <span id="rst" style="font-size:13px;color:var(--txt-xlt)">No guardado aún</span>
+      <button class="btn btn-sv" onclick="saveR()">Guardar mi punto de partida</button>
+    </div></div>`;
+  window.saveR=()=>{const v=document.getElementById('rta').value.trim();if(v.length>10){document.getElementById('rst').textContent='✓ Guardado. Continúa cuando quieras.';document.getElementById('rst').style.color='var(--olive)';}};
+}
+
+function pitch(el){
+  const profiles={
+    L:{name:'Laura',role:'Gerente de Operaciones',h:{g:'Empieza con un resultado específico. Idealmente con un número.',p:'El dolor de operaciones en sus palabras. Sin tecnicismos. Con consecuencias.',c:'Una oración sobre cómo lo resuelves. Sin nombres de herramientas.',pr:'Un cliente real o resultado concreto y medible. Muy breve.'}},
+    D:{name:'Diego',role:'Dueño de PYME',h:{g:'Habla de independencia y escala. Diego quiere que el negocio funcione sin él.',p:'Su dolor: si él no está, las cosas se caen. Hazlo sentir real.',c:'Conecta con escalar sin contratar más personas.',pr:'Cuánto tiempo recuperó otro dueño de PYME. Número concreto.'}},
+    Pa:{name:'Paola',role:'Directora Comercial',h:{g:'Habla de conversión y velocidad del equipo comercial.',p:'El equipo hace seguimiento manual, pierde oportunidades.',c:'Más cierres sin más contrataciones.',pr:'Una métrica de conversión o tiempo de respuesta mejorado.'}}
+  };
+  const ph=profiles[aprof];const d=pData[aprof];
+  function bld(){return[d.g,d.p,d.c,d.pr].filter(Boolean).join(' ');}
+  el.innerHTML=modTag(2)+`<h1 class="st">Construye tu pitch</h1>
+    <p class="ss">Elige un perfil y construye tu pitch de 60 segundos usando la estructura Gancho → Problema → Cómo → Prueba.</p>
+    <div class="ptabs">${Object.entries(profiles).map(([k,p])=>`<div class="ptab${aprof===k?' sel':''}" onclick="selP('${k}')"><div class="ptn">${p.name}</div><div class="ptr">${p.role}</div></div>`).join('')}</div>
+    <div class="pitch-g">
+      <div class="pitch-fields">${[{k:'g',l:'GANCHO'},{k:'p',l:'PROBLEMA'},{k:'c',l:'CÓMO'},{k:'pr',l:'PRUEBA'}].map(f=>`<div class="pf"><div class="pf-top"><span class="pf-lbl">${f.l}</span><span class="pf-cnt" id="fc-${f.k}">${d[f.k].length} car.</span></div><textarea id="pf-${f.k}" placeholder="${ph.h[f.k]}" oninput="updP('${f.k}')">${d[f.k]}</textarea><div class="pf-hint">${ph.h[f.k]}</div></div>`).join('')}</div>
+      <div class="pp"><div class="pp-lbl">Vista previa</div><div class="pp-pname">PITCH PARA ${ph.name.toUpperCase()} — ${ph.role.toUpperCase()}</div><div class="pp-cnt" id="ppc">${bld().length} car.</div><div class="pp-txt" id="ppt">${bld()||'<span class="pp-ph">[gancho] [problema] [cómo] [prueba]</span>'}</div><div class="pp-toks">${['GANCHO','PROBLEMA','CÓMO','PRUEBA'].map((tk,i)=>{const ks=['g','p','c','pr'];return`<span class="pp-tok${d[ks[i]]?' on':''}">${tk}</span>`;}).join('')}</div></div>
+    </div>`;
+  window.selP=(k)=>{aprof=k;pitch(el);};
+  window.updP=(k)=>{pData[aprof][k]=document.getElementById('pf-'+k).value;document.getElementById('fc-'+k).textContent=pData[aprof][k].length+' car.';const full=bld();document.getElementById('ppt').innerHTML=full||'<span class="pp-ph">[gancho] [problema] [cómo] [prueba]</span>';document.getElementById('ppc').textContent=full.length+' car.';const ks=['g','p','c','pr'];document.querySelectorAll('.pp-tok').forEach((tk,i)=>tk.className='pp-tok'+(pData[aprof][ks[i]]?' on':''));};
+}
+
+function pipeline(el){
+  const stages=[
+    {t:'Lead',d:'El prospecto entra al radar. Se registra en CRM con nombre, empresa, canal de entrada y necesidad inicial detectada.',ent:'Lead creado en CRM',her:'HubSpot / Pipedrive'},
+    {t:'Calificación',d:'BANT: ¿tiene Budget, Authority, Need, Timing? Si no pasa el filtro, se descarta con nota. Si pasa, avanza a demo.',ent:'Lead calificado o descartado',her:'CRM + criterios BANT'},
+    {t:'Demo / Reunión',d:'Primera reunión de descubrimiento profundo con SPIN. Se presenta el enfoque (no la propuesta). Se agenda propuesta si hay fit.',ent:'Notas de reunión en CRM',her:'Zoom / Meet + CRM'},
+    {t:'Propuesta',d:'Resumen ejecutivo + problema + solución propuesta + alcance + cronograma + inversión + siguiente paso concreto.',ent:'Propuesta enviada',her:'Plantilla estándar PDF'},
+    {t:'Negociación',d:'El cliente tiene preguntas u objeciones. Se aplica Feel-Felt-Found. Se ajusta alcance si es necesario, no precio por defecto.',ent:'Propuesta revisada si aplica',her:'Email + reunión'},
+    {t:'Cierre',d:'El cliente dice "sí". Se firma el contrato. Se inicia inmediatamente el proceso de handoff al equipo de delivery.',ent:'Contrato firmado',her:'DocuSign / físico'},
+    {t:'Handoff',d:'Reunión de traspaso al equipo de delivery. Brief completo. Introducción del cliente al lead técnico. Define el inicio real del proyecto.',ent:'Brief de handoff completo',her:'Brief estándar + reunión'}
+  ];
+  el.innerHTML=modTag(3)+`<h1 class="st">El pipeline de la agencia</h1>
+    <p class="ss">Cada etapa tiene entregables, herramientas y personas involucradas. Haz clic en cada etapa para ver el detalle.</p>
+    <div class="pipe-grid">${stages.map((s,i)=>`<div class="pipe-card${pipeSelIdx===i?' sel':''}" onclick="selPipe(${i})"><div class="pipe-num">${i+1}</div><h5>${s.t}</h5><p>${s.d.substring(0,55)}...</p></div>`).join('')}</div>
+    <div class="pipe-detail" id="pd">${pipeSelIdx!==null?`<div class="pipe-detail-lbl">Etapa ${pipeSelIdx+1} — ${stages[pipeSelIdx].t}</div><h4>${stages[pipeSelIdx].t}</h4><p>${stages[pipeSelIdx].d}</p><div class="pipe-chips"><span class="pipe-chip">📋 ${stages[pipeSelIdx].ent}</span><span class="pipe-chip">🔧 ${stages[pipeSelIdx].her}</span></div>`:'<p style="color:var(--txt-xlt);font-style:italic;font-size:14px">Haz clic en una etapa para ver el detalle completo.</p>'}</div>`;
+  window.selPipe=(i)=>{pipeSelIdx=i;pipeline(el);};
+}
+
+function acc_prop(el){
+  const its=[
+    {ic:'ti-file-description',t:'Resumen ejecutivo',b:'Lo que el tomador de decisiones va a leer primero. Resume el problema identificado y la solución propuesta en 3-5 oraciones. Si solo leen esta sección, deben entender el valor.',ex:'Error común: empezar con quiénes somos. El cliente ya sabe quién eres — dile qué va a ganar.'},
+    {ic:'ti-list-check',t:'Alcance',b:'Qué incluye y qué no incluye el proyecto. La ambigüedad en el alcance genera conflictos en implementación y destruye la relación antes de que empiece.',ex:'Malo: "Automatización de ventas". Bueno: "Automatización del envío de propuestas desde HubSpot cuando el deal pasa a etapa Propuesta."'},
+    {ic:'ti-currency-dollar',t:'Inversión',b:'El precio siempre va acompañado de contexto: qué incluye, qué queda fuera, cuál es el ROI estimado. Un número sin historia es solo un gasto.',ex:'Si el cliente pierde $5.000/mes en tiempo manual y la solución cuesta $8.000, incluye ese cálculo.'},
+    {ic:'ti-arrow-right',t:'Siguientes pasos',b:'Qué pasa si el cliente dice "sí" — con fechas concretas. La propuesta que no dice qué sigue no cierra. El cliente necesita saber exactamente qué presionar.',ex:'"Para comenzar: 1) Confirmar alcance / 2) Firmar contrato / 3) Reunión de kickoff el [fecha]."'}
+  ];
+  el.innerHTML=modTag(3)+`<h1 class="st">La propuesta: estructura y lógica</h1>
+    <p class="ss">Una propuesta no es una cotización — es un documento que sigue vendiendo cuando tú no estás en la sala.</p>
+    <div class="acc">${its.map((it,i)=>`<div class="ai" id="ap-${i}"><div class="ah" onclick="t('ap',${i})"><div class="aic"><i class="ti ${it.ic}"></i></div><h4>${it.t}</h4><i class="ti ti-chevron-down ach"></i></div><div class="ab"><p>${it.b}</p><div class="ab-ex"><div class="exl">Error común vs. buena práctica</div><p>${it.ex}</p></div></div></div>`).join('')}</div>`;
+}
+
+function acc_signals(el){
+  const its=[
+    {ic:'ti-message-question',t:'Pregunta sobre implementación',b:'Cuando el cliente pregunta "¿cuánto tarda en implementarse?" o "¿cómo es el proceso de inicio?", ya está imaginando el proyecto con ustedes.',ex:'"¿Cuándo podrían empezar?" → Responde con una fecha concreta. El cliente ya se está viendo en el proyecto.'},
+    {ic:'ti-users',t:'Involucra a otras personas',b:'Cuando dice "voy a comentarlo con mi socio" o "¿podemos incluir a mi equipo técnico?", está avanzando internamente. Facilita ese paso.',ex:'"¿Podrías hablar con nuestro jefe de IT?" → Señal fuerte. Propón una reunión conjunta esta semana.'},
+    {ic:'ti-calculator',t:'Pregunta por números específicos',b:'Cuando pide un desglose de costos o quiere saber "¿qué pasa si empezamos en enero?", está en modo decisión — no en modo evaluación.',ex:'"¿Pueden separar el costo de la primera fase?" → Está pensando en cómo presupuestarlo internamente. Es verde.'},
+    {ic:'ti-repeat',t:'Vuelve a contactarte sin seguimiento tuyo',b:'Si el cliente te escribe sin que tú hayas hecho seguimiento, está activo. Responde rápido y con propuesta de siguiente paso concreto.',ex:'"Te quería preguntar si podrían hacer también el módulo de facturación…" → Está expandiendo el alcance. Excelente señal.'}
+  ];
+  el.innerHTML=modTag(4)+`<h1 class="st">Señales de compra: reconócelas</h1>
+    <p class="ss">El cliente rara vez dice "quiero comprar." Lo dice de otras formas. Abre cada señal para ver cómo reconocerla y cómo responder.</p>
+    <div class="acc">${its.map((it,i)=>`<div class="ai" id="sg-${i}"><div class="ah" onclick="t('sg',${i})"><div class="aic"><i class="ti ${it.ic}"></i></div><h4>${it.t}</h4><i class="ti ti-chevron-down ach"></i></div><div class="ab"><p>${it.b}</p><div class="ab-ex"><div class="exl">Cómo responder</div><p>${it.ex}</p></div></div></div>`).join('')}</div>`;
+}
+
+function steps(el){
+  const st=[
+    {t:'Completar el brief estándar antes de la reunión',d:'Empresa, contacto, problema identificado, solución acordada, expectativas, riesgos detectados, acuerdos especiales y fecha de inicio.'},
+    {t:'Reunión de handoff con el equipo de delivery',d:'No lo hagas por email. El equipo necesita escuchar tu lectura del cliente: su estilo, sus miedos, sus expectativas no escritas.'},
+    {t:'Introducción formal del cliente al lead técnico',d:'Tú facilitas la relación inicial. El cliente necesita tener una cara y un nombre del equipo técnico antes de que empiecen.'},
+    {t:'Definir el canal de comunicación posventa',d:'Slack, email, reuniones quincenales — lo que acuerden. Definirlo al inicio previene malentendidos a los 30 días.'},
+    {t:'Check-in al mes 1 — sin esperar a que contacten',d:'El vendedor verifica proactivamente que la implementación avance bien. No esperes a que el cliente contacte con un problema.'}
+  ];
+  el.innerHTML=modTag(4)+`<h1 class="st">El handoff: sin fricciones</h1>
+    <p class="ss">Un mal handoff es la causa número uno de proyectos que empiezan mal. Cinco pasos, en orden.</p>
+    <div class="slist">${st.map((x,i)=>`<div class="sitem"><div class="snum">${i+1}</div><div><h5>${x.t}</h5><p>${x.d}</p></div></div>`).join('')}</div>
+    <button class="btn btn-s" style="font-size:13px"><i class="ti ti-printer" style="font-size:14px;margin-right:6px"></i>Guardar / imprimir como referencia</button>`;
+}
+
+function scenario_close(el){
+  const moms=[
+    {scene:'Paola dice: "Esto me parece interesante, pero necesito revisarlo con mi jefe antes de tomar una decisión."',q:'¿Qué haces?',opts:[
+      {t:'Claro, cuándo podemos reunirnos los tres.',q:'bad',fb:'Propones un siguiente paso sin entender el obstáculo real. El jefe puede no aparecer nunca.'},
+      {t:'¿Qué necesitaría tu jefe saber para sentirse cómodo con esta decisión?',q:'best',fb:'Perfecto. Entiendes el obstáculo real antes de proponer el siguiente paso.'},
+      {t:'¿Hay algo que todavía te genere dudas a ti?',q:'best',fb:'También válido. Verificas si hay objeciones no expresadas antes de involucrar a alguien más.'},
+      {t:'Te mando un resumen ejecutivo para que se lo pases.',q:'bad',fb:'Útil, pero reactivo. Primero necesitas saber qué información necesita el jefe específicamente.'}
+    ]},
+    {scene:'El jefe de Paola entra a la reunión y pregunta: "¿En cuánto tiempo veríamos resultados?"',q:'¿Cómo respondes?',opts:[
+      {t:'Depende de muchos factores que hay que evaluar.',q:'bad',fb:'Evasivo. El cliente lee "no saben" — destruye confianza justo cuando más la necesitas.'},
+      {t:'En proyectos similares hemos visto impacto operativo en las primeras 4 semanas.',q:'best',fb:'Específico, con evidencia de proyectos anteriores, sin prometer lo que no controlas.'},
+      {t:'Les garantizamos resultados en 30 días o devolvemos el dinero.',q:'bad',fb:'Prometes lo que no controlas. Si el cliente demora el kickoff, el cronograma cambia pero la promesa no.'},
+      {t:'Eso lo define el equipo técnico después de firmar.',q:'bad',fb:'Delega la respuesta al futuro — el cliente necesita información ahora para decidir.'}
+    ]}
+  ];
+  const m=moms[Math.min(scStep,moms.length-1)];
+  el.innerHTML=modTag(4)+`<h1 class="st">Simula el cierre</h1>
+    <p class="ss">Esta reunión puede terminar en firma o en "necesito pensarlo más." Lo que elijas en cada momento determina el resultado.</p>
+    <div class="sc-wrap">
+      <div class="sc-head"><div class="sc-av">PR</div><div><div class="sc-nm">Paola Ríos</div><div class="sc-rl">Directora Comercial · Reunión de cierre</div></div><div class="mbadge" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.8)">Momento ${scStep+1} de ${moms.length}</div></div>
+      <div class="sc-body"><div class="sc-scene">${m.scene}</div><div class="sc-q">${m.q}</div>
+      <div class="bropts">${m.opts.map((o,i)=>`<button class="brbtn" id="sc-${i}" onclick="scAns(${i})"><div class="brltr">${String.fromCharCode(65+i)}</div>${o.t}</button>`).join('')}</div>
+      <div id="scfb"></div></div>
+    </div>`;
+  // Disable Siguiente until all moments completed
+  const nb=document.getElementById('btn-next');
+  if(scStep===0){nb.disabled=true;nb.style.opacity='0.35';}
+  // Add footer with confirm button inside sc-body
+  el.querySelector('#scfb').insertAdjacentHTML('afterend',
+    `<div class="br-footer" style="border-top:1px solid rgba(255,255,255,.15);margin-top:16px;padding-top:14px">
+       <span class="back-disabled-lbl" id="sc-back-lbl"></span>
+       <button class="br-confirm-btn" id="sc-confirm" onclick="scConfirm()">Confirmar →</button>
+     </div>`);
+  window._scSel=null;
+  window.scAns=(i)=>{
+    window._scSel=i;
+    document.querySelectorAll('.brbtn').forEach((b,j)=>{b.classList.remove('br-pending');if(j===i)b.classList.add('br-pending');});
+    document.getElementById('sc-confirm').classList.add('ready');
+  };
+  window.scConfirm=()=>{
+    if(window._scSel===null)return;
+    const i=window._scSel;const o=m.opts[i];
+    document.querySelectorAll('.brbtn').forEach(b=>{b.disabled=true;b.classList.remove('br-pending');});
+    document.getElementById('sc-'+i).classList.add(o.q==='best'?'best':'bad');
+    m.opts.forEach((x,j)=>{if(x.q==='best')document.getElementById('sc-'+j).classList.add('best');});
+    document.getElementById('scfb').innerHTML=`<div class="brfb ${o.q==='best'?'g':'b'}">${o.fb}</div>`;
+    document.getElementById('sc-back-lbl').textContent='Continuar deshabilitado';
+    if(scStep<moms.length-1){
+      document.getElementById('sc-confirm').outerHTML=`<button class="br-next-btn" onclick="scNext()">Siguiente momento →</button>`;
+    } else {
+      document.getElementById('sc-confirm').style.display='none';
+      nb.disabled=false;nb.style.opacity='1';
+    }
+  };
+  window.scNext=()=>{scStep++;scenario_close(el);};
+}
+
+function complete(el){
+  el.innerHTML=`<div class="done-wrap">
+    <i class="ti ti-trophy done-icon"></i>
+    <h2>${uname?'¡'+uname+'! Llegaste al final.':'¡Felicitaciones! Llegaste al final.'}</h2>
+    <p>Has completado el recorrido de <em>De cero a primer cierre</em>. En el curso completo encontrarás los 5 módulos con todas las simulaciones, entregables y el plan de ventas integrador.</p>
+    <div class="done-bgs">
+      <div class="dbg">✓ M01: ¿Qué vendemos?</div>
+      <div class="dbg">✓ M02: Conoce a tu cliente</div>
+      <div class="dbg">✓ M03: El discurso de ventas</div>
+      <div class="dbg">✓ M04: El proceso comercial</div>
+      <div class="dbg">✓ M05: Cierre y posventa</div>
+    </div>
+    <button class="btn btn-p" onclick="goTo(0)">Reiniciar demo</button>
+  </div>`;
+  document.getElementById('btn-next').style.display='none';
+}
+
+render();
+</script>
+</body>
+</html>
