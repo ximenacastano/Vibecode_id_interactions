@@ -11,47 +11,42 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  /* Main backgrounds */
-  --bg:#FBF8F4;
-  --bg-dk:#EDE0D0;
-  --bg-md:#E6D5C0;
-  /* Sidebar */
+  --bg:#FBF8F4;--bg-dk:#EDE0D0;--bg-md:#E6D5C0;
   --sb-bg:#ffffff;
-  /* Text */
-  --txt:#2B2723;
-  --txt-md:#5A4A3A;
-  --txt-lt:#8A7A68;
-  --txt-xlt:#B0A090;
-  /* Brand colors */
-  --terra:#b1775a;
-  --terra-lt:#C8977A;
-  --terra-pl:#F7E6D8;
-  --terra-dk:#8A5540;
-  /* Olive — only for highlight numbers, borders, frames */
-  --olive:#6b7152;
-  --olive-lt:#8A9070;
-  --olive-pl:#E2E4D8;
-  /* Sand */
-  --sand:#C4B090;
-  --sand-lt:#E8DCCC;
-  /* Pct highlight */
+  --txt:#2B2723;--txt-md:#5A4A3A;--txt-lt:#8A7A68;--txt-xlt:#B0A090;
+  --terra:#b1775a;--terra-lt:#C8977A;--terra-pl:#F7E6D8;--terra-dk:#8A5540;
+  --olive:#6b7152;--olive-lt:#8A9070;--olive-pl:#E2E4D8;
+  --sand:#C4B090;--sand-lt:#E8DCCC;
   --pct-hl:#F7E6D8;
-  /* Fonts */
   --ff-head:'Playfair Display',Georgia,serif;
   --ff-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  --sidebar:260px
+  --sidebar:260px;
+  --transition-dur:0.22s
 }
-body{background:var(--bg);font-family:var(--ff-body);color:var(--txt);font-size:16px;line-height:1.6}
+body.dark{
+  --bg:#1C1917;--bg-dk:#28231E;--bg-md:#322B25;
+  --sb-bg:#221E1A;
+  --txt:#F0E8DF;--txt-md:#C0B0A0;--txt-lt:#7A6A5A;--txt-xlt:#4A3A2A;
+  --terra:#C8876A;--terra-lt:#D8A088;--terra-pl:#3A2418;--terra-dk:#E8B8A0;
+  --olive:#8A9068;--olive-lt:#A8AE88;--olive-pl:#282C18;
+  --sand:#8A7860;--sand-lt:#3A3020;
+  --pct-hl:#282C18
+}
+body{background:var(--bg);font-family:var(--ff-body);color:var(--txt);font-size:16px;line-height:1.6;transition:background var(--transition-dur),color var(--transition-dur)}
 #app{display:flex;height:100vh;min-height:600px;overflow:hidden}
 
+/* ── OVERLAY (mobile) ───── */
+#sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99;backdrop-filter:blur(2px)}
+#sb-overlay.on{display:block}
+
 /* ── SIDEBAR ─────────────────────────────── */
-#sb{width:var(--sidebar);background:var(--sb-bg);border-right:1px solid var(--bg-dk);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;font-size:13px}
+#sb{width:var(--sidebar);background:var(--sb-bg);border-right:1px solid var(--bg-dk);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;font-size:13px;transition:background var(--transition-dur),border-color var(--transition-dur),left .25s}
 #sb-top{padding:20px 16px 16px;border-bottom:1px solid var(--bg-dk)}
 .sb-ver{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-xlt);margin-bottom:5px;font-weight:600}
 .sb-ttl{font-family:var(--ff-head);font-size:15px;font-weight:500;color:var(--txt);margin-bottom:2px;line-height:1.3}
 .sb-sub{font-size:11px;color:var(--txt-lt);margin-bottom:10px}
 .sb-prog{height:3px;background:var(--bg-dk);border-radius:2px}
-.sb-pfill{height:100%;background:var(--terra);border-radius:2px;transition:width .4s}
+.sb-pfill{height:100%;background:var(--terra);border-radius:2px;transition:width .5s}
 .sb-pct{font-size:10px;color:var(--txt-lt);margin-top:4px}
 .sb-map-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-xlt);padding:14px 16px 5px;font-weight:600}
 .sb-mod{border-bottom:1px solid var(--bg-dk)}
@@ -71,7 +66,7 @@ body{background:var(--bg);font-family:var(--ff-body);color:var(--txt);font-size:
 .sb-slide:hover{background:var(--bg)}
 .sb-slide.act{color:var(--terra);font-weight:600;background:var(--terra-pl)}
 .sb-slide.done{color:var(--olive-lt)}
-.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--bg-dk);flex-shrink:0}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--bg-dk);flex-shrink:0;transition:background .2s}
 .sb-slide.act .sb-dot{background:var(--terra)}
 .sb-slide.done .sb-dot{background:var(--olive)}
 .sb-bottom{margin-top:auto;border-top:1px solid var(--bg-dk);padding:10px 14px}
@@ -79,29 +74,31 @@ body{background:var(--bg);font-family:var(--ff-body);color:var(--txt);font-size:
 .sb-bot-btn:hover{color:var(--txt-md)}
 
 /* ── TOPBAR ──────────────────────────────── */
-#tb{height:48px;background:var(--sb-bg);border-bottom:1px solid var(--bg-dk);display:flex;align-items:center;padding:0 28px;gap:12px;flex-shrink:0}
+#tb{height:48px;background:var(--sb-bg);border-bottom:1px solid var(--bg-dk);display:flex;align-items:center;padding:0 20px;gap:10px;flex-shrink:0;transition:background var(--transition-dur),border-color var(--transition-dur)}
+#hamburger{display:none;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;cursor:pointer;color:var(--txt-lt);flex-shrink:0}
+#hamburger:hover{background:var(--bg)}
 .tb-lbl{font-size:12px;color:var(--txt-md);font-weight:600;white-space:nowrap;background:var(--pct-hl);border-radius:20px;padding:3px 10px;color:var(--olive)}
-.tb-sect{font-size:12px;color:var(--txt-lt);white-space:nowrap}
+.tb-sect{font-size:12px;color:var(--txt-lt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
 #tb-bw{flex:1;height:4px;background:var(--bg-dk);border-radius:2px}
-#tb-bf{height:100%;background:var(--olive);border-radius:2px;transition:width .4s}
+#tb-bf{height:100%;background:var(--olive);border-radius:2px;transition:width .5s}
 .tb-pct{font-size:12px;font-weight:600;min-width:42px;text-align:right;background:var(--pct-hl);border-radius:20px;padding:2px 8px;color:var(--olive)}
-.tb-ic{font-size:16px;color:var(--txt-lt);cursor:pointer;padding:4px;opacity:.7}
+.tb-ic{font-size:16px;color:var(--txt-lt);cursor:pointer;padding:4px;opacity:.7;transition:opacity .15s,color .2s;flex-shrink:0}
 .tb-ic:hover{opacity:1}
-/* Welcome greeting top-right */
-#tb-user{display:flex;align-items:center;gap:8px;margin-left:8px}
-#tb-avatar{width:30px;height:30px;border-radius:50%;background:var(--olive);color:white;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#tb-user{display:flex;align-items:center;gap:8px;margin-left:4px}
+#tb-avatar{width:30px;height:30px;border-radius:50%;background:var(--olive);color:white;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background var(--transition-dur)}
 #tb-greeting{font-size:12px;color:var(--txt-md);white-space:nowrap;font-weight:500}
 
 /* ── MAIN ────────────────────────────────── */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#content{flex:1;overflow-y:auto;padding:44px 60px 36px}
+#content{flex:1;overflow-y:auto;padding:44px 60px 36px;transition:opacity .18s ease}
+#content.fading{opacity:0}
 
 /* ── SHARED TYPOGRAPHY ───────────────────── */
 .mod-tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt);margin-bottom:12px;line-height:1.15}
 .ss{font-size:17px;color:var(--txt-md);line-height:1.65;margin-bottom:32px;max-width:680px}
 
-/* ── WELCOME HERO (Knotty Pines layout) ──── */
+/* ── WELCOME HERO ───────── */
 .hero{display:grid;grid-template-columns:1fr 1fr;border-radius:14px;overflow:hidden;margin-bottom:28px;min-height:280px;border:1px solid var(--olive);border-radius:12px}
 .hero-l{background:var(--terra-pl);padding:36px 32px}
 .hero-badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
@@ -114,7 +111,6 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .hero-obj li{display:flex;gap:10px;margin-bottom:8px;line-height:1.5;align-items:flex-start}
 .hero-obj li .obj-bullet{width:18px;height:18px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .hero-obj li .obj-bullet i{font-size:9px;color:white}
-/* Right side: photo placeholder */
 .hero-r{background:#e8e0d4;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;min-height:280px}
 .hero-img-placeholder{width:100%;height:100%;object-fit:cover;display:block}
 .hero-r-overlay{position:absolute;bottom:0;left:0;right:0;padding:18px 20px;background:linear-gradient(to top,rgba(43,39,35,.7) 0%,transparent 100%)}
@@ -122,18 +118,19 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .hero-r-sub{color:rgba(255,255,255,.6);font-size:11px;margin-top:2px}
 
 /* Before begin */
-.bb{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:24px 28px}
+.bb{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:24px 28px;transition:background var(--transition-dur)}
 .bb-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px}
 .bb h3{font-family:var(--ff-head);font-size:20px;font-weight:500;margin-bottom:4px}
 .bb p{font-size:14px;color:var(--txt-md);margin-bottom:14px}
-.bb-row{display:flex;gap:12px;align-items:center}
-.bb-row input{flex:1;padding:10px 16px;border:1px solid var(--olive);border-radius:8px;font-size:15px;background:var(--bg);font-family:var(--ff-body);color:var(--txt);outline:none}
+.bb-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bb-row input{flex:1;min-width:160px;padding:10px 16px;border:1px solid var(--olive);border-radius:8px;font-size:15px;background:var(--bg);font-family:var(--ff-body);color:var(--txt);outline:none;transition:border-color .2s,background var(--transition-dur),color var(--transition-dur)}
 .bb-row input:focus{border-color:var(--terra)}
 .bb-meta{font-size:11px;color:var(--txt-xlt);margin-top:10px}
 
 /* ── CARDS ───────────────────────────────── */
 .cards-g{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
-.card{background:var(--sb-bg);border:1px solid var(--olive);border-top:3px solid var(--olive);border-radius:10px;padding:22px}
+.card{background:var(--sb-bg);border:1px solid var(--olive);border-top:3px solid var(--olive);border-radius:10px;padding:22px;transition:background var(--transition-dur),transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.07)}
 .card .ctag{font-size:10px;color:var(--txt-xlt);margin-bottom:12px;font-weight:600;letter-spacing:.08em}
 .card i.ci{font-size:28px;color:var(--olive-pl);margin-bottom:14px;display:block;color:var(--olive)}
 .card h4{font-family:var(--ff-head);font-size:16px;font-weight:500;margin-bottom:10px;color:var(--txt)}
@@ -141,7 +138,7 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 
 /* ── ACCORDION ───────────────────────────── */
 .acc{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-.ai{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;overflow:hidden}
+.ai{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;overflow:hidden;transition:background var(--transition-dur)}
 .ah{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;transition:background .15s}
 .ah:hover{background:var(--bg)}
 .aic{width:36px;height:36px;border-radius:50%;background:var(--olive-pl);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--olive);flex-shrink:0}
@@ -183,13 +180,13 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 /* ── PITCH BUILDER ───────────────────────── */
 .pitch-g{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .pitch-fields{display:flex;flex-direction:column;gap:12px}
-.pf{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:16px 18px}
+.pf{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:16px 18px;transition:background var(--transition-dur)}
 .pf-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .pf-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600}
 .pf-cnt{font-size:11px;color:var(--txt-xlt)}
 .pf textarea{width:100%;border:none;background:transparent;font-family:var(--ff-body);font-size:14px;color:var(--txt);resize:none;outline:none;min-height:68px;line-height:1.6}
 .pf-hint{font-size:12px;color:var(--txt-xlt);font-style:italic;margin-top:6px;line-height:1.5;border-top:1px solid var(--bg-dk);padding-top:6px}
-.pp{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:22px;display:flex;flex-direction:column}
+.pp{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:22px;display:flex;flex-direction:column;transition:background var(--transition-dur)}
 .pp-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-xlt);font-weight:600;margin-bottom:3px}
 .pp-pname{font-size:11px;color:var(--terra);margin-bottom:14px;font-weight:600}
 .pp-cnt{font-size:11px;color:var(--txt-xlt);margin-bottom:10px}
@@ -200,7 +197,7 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .pp-tok.on{background:var(--olive-pl);color:var(--olive)}
 
 /* ── BRANCHING ───────────────────────────── */
-.persona-row{display:flex;align-items:center;gap:14px;background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:14px 18px;margin-bottom:20px}
+.persona-row{display:flex;align-items:center;gap:14px;background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:14px 18px;margin-bottom:20px;transition:background var(--transition-dur)}
 .pav{width:46px;height:46px;border-radius:50%;background:var(--olive);display:flex;align-items:center;justify-content:center;color:white;font-family:var(--ff-head);font-size:16px;font-weight:500;flex-shrink:0}
 .pnm{font-size:15px;font-weight:600;color:var(--txt)}
 .prl{font-size:12px;color:var(--txt-lt)}
@@ -220,7 +217,7 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .brfb.b{background:var(--terra-pl);color:var(--terra-dk);border:1px solid #D4A89A}
 
 /* ── QUIZ ────────────────────────────────── */
-.qcard{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:28px}
+.qcard{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:28px;transition:background var(--transition-dur)}
 .q-meta{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-lt);margin-bottom:14px;font-weight:600}
 .q-txt{font-family:var(--ff-head);font-size:21px;color:var(--txt);margin-bottom:22px;line-height:1.5}
 .qopts{display:flex;flex-direction:column;gap:10px}
@@ -234,30 +231,32 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .qfb{border-radius:8px;padding:14px 16px;margin-top:14px;font-size:14px;line-height:1.6}
 .qfb.ok{background:#EAEDDF;color:var(--olive);border:1px solid var(--olive-pl)}
 .qfb.nok{background:var(--terra-pl);color:var(--terra-dk);border:1px solid #D4A89A}
+.q-next{margin-top:16px;font-size:13px;color:var(--txt-lt);font-style:italic}
 
 
-/* ── QUIZ: pending selection & confirm button ── */
-.qo.qo-pending{border-color:var(--terra);background:var(--terra-pl)}
-.qo.qo-pending .ql{background:var(--terra);color:white}
+/* ── QUIZ: pending & confirm ── */
+.qo.qo-sel{border-color:var(--terra);background:var(--terra-pl)}
+.qo.qo-sel .ql{background:var(--terra);color:white}
 .q-footer{display:flex;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--olive-pl)}
-.q-confirm-btn{background:#c9c5bc;color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:not-allowed;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .15s}
-.q-confirm-btn.ready{background:var(--terra);cursor:pointer}
-.q-confirm-btn.ready:hover{opacity:.9;transform:translateY(-1px)}
+.q-confirm{background:#c9c5bc;color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:not-allowed;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .15s}
+.q-confirm.on{background:var(--terra);cursor:pointer}
+.q-confirm.on:hover{opacity:.9;transform:translateY(-1px)}
 
 /* ── BRANCH/SCENARIO: pending & confirm ── */
-.brbtn.br-pending{border-color:var(--terra)!important;background:var(--terra-pl)!important}
-.brbtn.br-pending .brltr{background:var(--terra)!important;color:white!important}
-.br-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.15)}
-.br-confirm-btn{background:#c9c5bc;color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:not-allowed;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .15s}
-.br-confirm-btn.ready{background:var(--terra);cursor:pointer}
-.br-confirm-btn.ready:hover{opacity:.9;transform:translateY(-1px)}
-.br-next-btn{background:var(--olive);color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
-.br-next-btn:hover{opacity:.88}
-.back-disabled-lbl{font-size:13px;color:rgba(255,255,255,.4);font-style:italic}
+.brbtn.br-sel{border-color:var(--terra)!important;background:var(--terra-pl)!important}
+.brbtn.br-sel .brltr{background:var(--terra)!important;color:white!important}
+.br-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--olive-pl)}
+.br-confirm{background:#c9c5bc;color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:not-allowed;display:inline-flex;align-items:center;gap:6px;transition:background .2s,transform .15s}
+.br-confirm.on{background:var(--terra);cursor:pointer}
+.br-confirm.on:hover{opacity:.9;transform:translateY(-1px)}
+.br-sig{background:var(--olive);color:white;border:none;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:600;font-family:var(--ff-body);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
+.br-sig:hover{opacity:.85}
+.br-disabled-lbl{font-size:12px;color:var(--txt-xlt);font-style:italic}
+
 /* ── REFLECT ─────────────────────────────── */
-.rcard{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:26px}
+.rcard{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:26px;transition:background var(--transition-dur)}
 .rcard p{font-size:15px;color:var(--txt-md);margin-bottom:18px;line-height:1.65}
-.rcard textarea{width:100%;min-height:120px;border:1px solid var(--olive);border-radius:8px;padding:14px;font-size:15px;font-family:var(--ff-body);color:var(--txt);background:var(--bg);resize:vertical;outline:none;line-height:1.6}
+.rcard textarea{width:100%;min-height:120px;border:1px solid var(--olive);border-radius:8px;padding:14px;font-size:15px;font-family:var(--ff-body);color:var(--txt);background:var(--bg);resize:vertical;outline:none;line-height:1.6;transition:border-color .2s,background var(--transition-dur),color var(--transition-dur)}
 .rcard textarea:focus{border-color:var(--terra)}
 
 /* ── STEPS ───────────────────────────────── */
@@ -276,7 +275,7 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .pipe-card.sel .pipe-num{background:var(--terra)}
 .pipe-card h5{font-family:var(--ff-head);font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
 .pipe-card p{font-size:12px;color:var(--txt-lt);line-height:1.5}
-.pipe-detail{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:22px;margin-bottom:20px;min-height:80px}
+.pipe-detail{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:22px;margin-bottom:20px;min-height:80px;transition:background var(--transition-dur)}
 .pipe-detail-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:12px}
 .pipe-detail h4{font-family:var(--ff-head);font-size:18px;font-weight:500;margin-bottom:10px}
 .pipe-detail p{font-size:14px;color:var(--txt-md);line-height:1.65;margin-bottom:8px}
@@ -284,7 +283,7 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .pipe-chip{background:var(--bg-dk);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--txt-md)}
 
 /* ── SCENARIO ────────────────────────────── */
-.sc-wrap{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.sc-wrap{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;overflow:hidden;margin-bottom:20px;transition:background var(--transition-dur)}
 .sc-head{background:var(--olive);padding:20px 24px;display:flex;align-items:center;gap:14px}
 .sc-av{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:white;font-family:var(--ff-head);font-size:16px;font-weight:500;flex-shrink:0}
 .sc-nm{font-family:var(--ff-head);font-size:16px;color:white;font-weight:500}
@@ -293,16 +292,23 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .sc-scene{font-size:15px;color:var(--txt-md);line-height:1.65;margin-bottom:18px;font-style:italic;border-left:3px solid var(--terra);padding-left:16px}
 .sc-q{font-size:15px;font-weight:600;color:var(--txt);margin-bottom:16px}
 
-/* ── COMPLETE ────────────────────────────── */
-.done-wrap{text-align:center;padding:60px 32px}
+/* ── COMPLETE / CERTIFICATE ─────────────── */
+.done-wrap{text-align:center;padding:40px 32px}
 .done-icon{font-size:64px;color:var(--terra);margin-bottom:24px}
 .done-wrap h2{font-family:var(--ff-head);font-size:34px;font-weight:500;margin-bottom:14px;color:var(--txt)}
 .done-wrap p{font-size:16px;color:var(--txt-md);margin-bottom:28px;line-height:1.65;max-width:520px;margin-left:auto;margin-right:auto}
 .done-bgs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
 .dbg{background:var(--olive-pl);color:var(--olive);border-radius:20px;padding:7px 18px;font-size:13px;font-weight:600}
+.cert{border:2px solid var(--olive);border-radius:16px;padding:36px 48px;max-width:600px;margin:0 auto 28px;background:var(--sb-bg);position:relative}
+.cert::before{content:'';position:absolute;inset:6px;border:1px solid var(--olive-pl);border-radius:11px;pointer-events:none}
+.cert-badge{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px}
+.cert h3{font-family:var(--ff-head);font-size:28px;font-weight:600;color:var(--txt);margin-bottom:6px}
+.cert-name{font-family:var(--ff-head);font-size:38px;font-weight:400;color:var(--terra);margin:10px 0;font-style:italic}
+.cert-desc{font-size:14px;color:var(--txt-md);line-height:1.6;margin-top:12px;border-top:1px solid var(--bg-dk);padding-top:14px}
+.cert-date{font-size:11px;color:var(--txt-xlt);margin-top:10px}
 
 /* ── FOOTER NAV ──────────────────────────── */
-#fn{background:var(--sb-bg);border-top:1px solid var(--bg-dk);padding:16px 60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+#fn{background:var(--sb-bg);border-top:1px solid var(--bg-dk);padding:16px 60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;transition:background var(--transition-dur),border-color var(--transition-dur)}
 .fn-meta{font-size:13px;color:var(--txt-lt);display:flex;align-items:center;gap:6px}
 .btn{padding:11px 26px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--ff-body);transition:all .15s}
 .btn-p{background:var(--terra);color:white}
@@ -311,15 +317,205 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
 .btn-s:hover{background:var(--bg)}
 .btn-sv{background:var(--olive);color:white}
 .btn-sv:hover{background:#525840}
+
+/* ── MODAL (reset confirm) ──────────────── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal-bg.on{display:flex}
+.modal{background:var(--sb-bg);border:1px solid var(--olive);border-radius:14px;padding:32px;max-width:380px;width:90%;text-align:center}
+.modal h3{font-family:var(--ff-head);font-size:22px;margin-bottom:12px;color:var(--txt)}
+.modal p{font-size:14px;color:var(--txt-md);margin-bottom:24px;line-height:1.6}
+.modal-btns{display:flex;gap:10px;justify-content:center}
+
+/* ── KEYBOARD HINT ──────────────────────── */
+.kb-hint{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt-xlt)}
+.kb{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 5px;border:1px solid var(--bg-dk);border-radius:4px;font-size:10px;font-family:var(--ff-body);background:var(--bg);color:var(--txt-lt)}
+
+/* ── MOBILE ─────────────────────────────── */
+@media(max-width:768px){
+  #hamburger{display:flex}
+  #sb{position:fixed;left:-270px;top:0;bottom:0;z-index:100;width:270px}
+  #sb.mob-open{left:0}
+  #tb-sect{display:none}
+  #content{padding:24px 20px 24px}
+  #fn{padding:12px 20px}
+  .hero{grid-template-columns:1fr}
+  .hero-r{min-height:140px}
+  .cards-g{grid-template-columns:1fr}
+  .pipe-grid{grid-template-columns:repeat(2,1fr)}
+  .pitch-g{grid-template-columns:1fr}
+  .dd-g{grid-template-columns:1fr}
+  h1.st{font-size:26px}
+  .ss{font-size:15px}
+  #tb-greeting{display:none}
+  .kb-hint{display:none}
+}
+@media(max-width:480px){
+  .pipe-grid{grid-template-columns:1fr}
+  .ptabs{flex-direction:column}
+  .cert{padding:24px 20px}
+  .cert-name{font-size:28px}
+}
+
+/* ── CARD STAGGER ANIMATION ─────────────── */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card-anim{opacity:0;animation:fadeInUp .48s ease forwards}
+
+/* ── CALCULATOR ─────────────────────────── */
+.calc-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px;align-items:start}
+.calc-inputs{display:flex;flex-direction:column;gap:18px}
+.calc-field label{display:block;font-size:14px;color:var(--txt-md);margin-bottom:8px;font-weight:500;line-height:1.5}
+.calc-input-row{display:flex;align-items:center;gap:10px}
+.calc-input-row input{width:100px;padding:10px 14px;border:1px solid var(--olive);border-radius:8px;font-size:22px;font-weight:600;font-family:var(--ff-head);color:var(--txt);background:var(--bg);outline:none;transition:border-color .2s,background var(--transition-dur),color var(--transition-dur)}
+.calc-input-row input:focus{border-color:var(--terra)}
+.calc-unit{font-size:13px;color:var(--txt-lt);white-space:nowrap}
+.calc-result{background:var(--sb-bg);border:1px solid var(--olive);border-radius:12px;padding:28px;min-height:130px;display:flex;align-items:center;justify-content:center;transition:background var(--transition-dur)}
+.calc-placeholder{font-size:14px;color:var(--txt-xlt);font-style:italic;text-align:center}
+.calc-num-grid{display:flex;align-items:center;justify-content:space-around;gap:12px;width:100%}
+.calc-stat{text-align:center}
+.calc-num{font-family:var(--ff-head);font-size:34px;font-weight:500;color:var(--terra);line-height:1.1}
+.calc-lbl{font-size:10px;color:var(--txt-lt);margin-top:4px;text-transform:uppercase;letter-spacing:.08em}
+.calc-div{width:1px;height:56px;background:var(--bg-dk)}
+.calc-insight{display:flex;align-items:flex-start;gap:14px;background:var(--terra-pl);border:1px solid var(--terra);border-radius:10px;padding:16px 20px;margin-top:10px}
+.calc-insight i{font-size:20px;color:var(--terra);flex-shrink:0;margin-top:2px}
+.calc-insight p{font-size:14px;color:var(--txt-md);line-height:1.6;margin:0}
+
+/* ── SERVICES GRID (flip cards) ─────────── */
+.srv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.srv-card{height:150px;cursor:pointer;perspective:900px}
+.srv-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.srv-card.flipped .srv-inner{transform:rotateY(180deg)}
+.srv-front,.srv-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.srv-front{background:var(--sb-bg);border:1px solid var(--olive);border-top:3px solid var(--olive);transition:background var(--transition-dur)}
+.srv-back{background:var(--terra-pl);border:1px solid var(--terra);transform:rotateY(180deg)}
+.srv-icon{font-size:26px;color:var(--olive);margin-bottom:8px;display:block}
+.srv-name{font-family:var(--ff-head);font-size:13px;font-weight:500;color:var(--txt);line-height:1.3;margin-bottom:5px}
+.srv-hint{font-size:10px;color:var(--txt-xlt);letter-spacing:.04em}
+.srv-back-lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:6px}
+.srv-back-txt{font-size:12px;color:var(--txt-md);line-height:1.5}
+
+/* ── VALUE PROP TABLE ───────────────────── */
+.vp-table{border:1px solid var(--olive);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.vp-hdr{display:grid;grid-template-columns:150px 1fr 1fr;background:var(--olive);color:white}
+.vp-hdr>div{padding:12px 16px;font-size:12px;font-weight:600}
+.vp-hdr-us{background:rgba(255,255,255,.15)}
+.vp-row{display:grid;grid-template-columns:150px 1fr 1fr;border-top:1px solid var(--bg-dk);cursor:pointer;transition:background .15s}
+.vp-row:hover:not(.revealed){background:var(--bg)}
+.vp-feat{padding:14px 16px;font-size:12px;font-weight:600;color:var(--txt-md);background:var(--bg);text-transform:uppercase;letter-spacing:.04em}
+.vp-gen{padding:14px 16px;font-size:13px;color:var(--txt-lt)}
+.vp-us{padding:14px 16px;font-size:13px;color:var(--olive);background:var(--olive-pl);font-weight:500}
+.vp-ph{color:var(--txt-xlt);font-style:italic;font-size:12px}
+
+/* ── PROFILE QUIZ ───────────────────────── */
+.pq-case{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:20px;margin-bottom:14px;transition:background var(--transition-dur)}
+.pq-num{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-xlt);font-weight:600;margin-bottom:10px}
+.pq-txt{font-family:var(--ff-head);font-size:15px;color:var(--txt);line-height:1.6;margin-bottom:16px;font-style:italic;border-left:3px solid var(--terra);padding-left:14px}
+.pq-opts{display:flex;gap:10px;flex-wrap:wrap}
+.pq-btn{background:var(--bg);border:1px solid var(--olive);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:var(--ff-body);color:var(--txt);transition:all .15s}
+.pq-btn:hover{background:var(--bg-dk);border-color:var(--terra)}
+.pq-btn.pq-cor{background:#EAEDDF;border-color:var(--olive);color:var(--olive);font-weight:600}
+.pq-btn.pq-wr{background:var(--terra-pl);border-color:var(--terra);color:var(--terra-dk)}
+.pq-fb{margin-top:12px;border-radius:8px;padding:10px 14px;font-size:13px;line-height:1.55}
+.pq-fb-ok{background:#EAEDDF;color:var(--olive);border:1px solid var(--olive-pl)}
+.pq-fb-nok{background:var(--terra-pl);color:var(--terra-dk);border:1px solid #D4A89A}
+
+/* ── ICEBERG ────────────────────────────── */
+.iceberg-top{background:var(--terra-pl);border:1px solid var(--terra);border-radius:12px 12px 0 0;padding:22px 28px}
+.iceberg-top-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);font-weight:600;margin-bottom:10px}
+.iceberg-water{height:10px;background:linear-gradient(to bottom,rgba(107,113,82,.25),rgba(107,113,82,.07));border-left:1px solid var(--olive);border-right:1px solid var(--olive)}
+.iceberg-bot{background:var(--olive-pl);border:1px solid var(--olive);border-radius:0 0 12px 12px;padding:22px 28px;margin-bottom:20px}
+.iceberg-bot-lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--olive);font-weight:600;margin-bottom:10px}
+.ice-item{background:var(--sb-bg);border-radius:8px;padding:9px 14px;margin-bottom:8px;font-size:14px;color:var(--txt-md);font-style:italic;border:1px solid var(--bg-dk)}
+.ice-item-dark{background:rgba(107,113,82,.12);border-radius:8px;padding:9px 14px;margin-bottom:8px;font-size:14px;color:var(--txt);border:1px solid var(--olive-pl);opacity:0;transition:opacity .4s}
+.ice-item-dark.vis{opacity:1}
+.iceberg-insight{display:flex;align-items:flex-start;gap:14px;background:var(--olive-pl);border:1px solid var(--olive);border-radius:10px;padding:16px 20px;margin-top:14px;display:none}
+.iceberg-insight.vis{display:flex}
+.iceberg-insight i{font-size:20px;color:var(--olive);flex-shrink:0;margin-top:2px}
+.iceberg-insight div{font-size:14px;color:var(--txt-md);line-height:1.6}
+
+/* ── FFF MODEL ──────────────────────────── */
+.fff-intro{display:flex;align-items:center;gap:8px;background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:16px 20px;margin-bottom:20px;flex-wrap:wrap;transition:background var(--transition-dur)}
+.fff-step{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:90px;text-align:center}
+.fff-badge{border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;letter-spacing:.04em}
+.fff-f1{background:var(--terra);color:white}
+.fff-f2{background:var(--olive);color:white}
+.fff-f3{background:var(--txt);color:white}
+.fff-step-desc{font-size:11px;color:var(--txt-lt);line-height:1.4}
+.fff-arrow{color:var(--txt-xlt);font-size:18px}
+.fff-resp{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.fff-pill{border-radius:4px;padding:2px 9px;font-size:9px;font-weight:700;letter-spacing:.06em;flex-shrink:0;margin-top:4px}
+
+/* ── OBJECTIONS PRACTICE ────────────────── */
+.ob-practice{display:flex;flex-direction:column;gap:14px}
+.ob-item{background:var(--sb-bg);border:1px solid var(--olive);border-radius:10px;padding:18px;display:flex;gap:14px;transition:background var(--transition-dur)}
+.ob-num{width:26px;height:26px;border-radius:50%;background:var(--olive);color:white;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.ob-content{flex:1}
+.ob-quote{font-family:var(--ff-head);font-size:14px;color:var(--txt);font-style:italic;margin-bottom:10px;line-height:1.5;border-left:3px solid var(--terra);padding-left:12px}
+.ob-ta{width:100%;min-height:72px;border:1px solid var(--olive);border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(--ff-body);color:var(--txt);background:var(--bg);resize:vertical;outline:none;line-height:1.5;margin-bottom:8px;transition:border-color .2s,background var(--transition-dur),color var(--transition-dur)}
+.ob-ta:focus{border-color:var(--terra)}
+.ob-checks{display:flex;gap:10px;flex-wrap:wrap}
+.ob-ck{font-size:11px;color:var(--txt-lt);display:flex;align-items:center;gap:4px;transition:color .2s}
+
+/* ── CLOSE COMPARE ──────────────────────── */
+.cc-table{border:1px solid var(--olive);border-radius:12px;overflow:hidden;margin-bottom:18px}
+.cc-hdr{display:grid;grid-template-columns:130px 1fr 1fr;background:var(--txt);color:white}
+.cc-hdr>div{padding:11px 16px;font-size:12px;font-weight:600}
+.cc-hdr-us{background:rgba(255,255,255,.12)}
+.cc-row{display:grid;grid-template-columns:130px 1fr 1fr;border-top:1px solid var(--bg-dk)}
+.cc-asp{padding:13px 16px;font-size:11px;font-weight:600;color:var(--txt-md);background:var(--bg);text-transform:uppercase;letter-spacing:.04em}
+.cc-pres{padding:13px 16px;font-size:13px;color:var(--txt-lt)}
+.cc-cons{padding:13px 16px;font-size:13px;color:var(--olive);background:var(--olive-pl);font-weight:500}
+.cc-key{display:flex;align-items:flex-start;gap:14px;background:var(--olive-pl);border:1px solid var(--olive);border-radius:10px;padding:16px 20px}
+.cc-key i{font-size:20px;color:var(--olive);flex-shrink:0;margin-top:2px}
+.cc-key div{font-size:14px;color:var(--txt-md);line-height:1.6}
+
+/* ── 90-DAY PLAN ────────────────────────── */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:14px}
+.plan-card{background:var(--sb-bg);border:1px solid var(--olive);border-top:3px solid var(--olive);border-radius:10px;padding:18px;transition:background var(--transition-dur)}
+.plan-title{font-family:var(--ff-head);font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px}
+.plan-desc{font-size:12px;color:var(--txt-lt);margin-bottom:14px;line-height:1.5}
+.plan-fields{display:flex;flex-direction:column;gap:10px}
+.plan-field label{display:block;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--terra);margin-bottom:3px}
+.plan-field input,.plan-field select{width:100%;padding:7px 10px;border:1px solid var(--olive);border-radius:6px;font-size:13px;font-family:var(--ff-body);color:var(--txt);background:var(--bg);outline:none;transition:border-color .2s,background var(--transition-dur),color var(--transition-dur)}
+.plan-field input:focus,.plan-field select:focus{border-color:var(--terra)}
+
+/* ── MOBILE additions ───────────────────── */
+@media(max-width:768px){
+  .calc-wrap{grid-template-columns:1fr}
+  .srv-grid{grid-template-columns:repeat(2,1fr)}
+  .vp-table,.cc-table{overflow-x:auto}
+  .plan-grid{grid-template-columns:1fr}
+  .fff-intro{flex-direction:column;align-items:flex-start}
+  .fff-arrow{display:none}
+}
+@media(max-width:480px){.srv-grid{grid-template-columns:1fr}}
+
+/* ── PRINT (certificate) ────────────────── */
+@media print{
+  #sb,#tb,#fn,#sb-overlay,.modal-bg,.done-btns,.done-bgs{display:none!important}
+  #main{overflow:visible}
+  #content{overflow:visible;padding:0}
+  .cert{border-color:#6b7152;page-break-inside:avoid}
+}
 </style>
 </head>
 <body>
-<div id="app">
+<div id="sb-overlay" onclick="closeSb()"></div>
+<div class="modal-bg" id="reset-modal">
+  <div class="modal">
+    <h3>¿Reiniciar el curso?</h3>
+    <p>Perderás todo tu progreso guardado, incluyendo el pitch y las respuestas.</p>
+    <div class="modal-btns">
+      <button class="btn btn-s" onclick="document.getElementById('reset-modal').classList.remove('on')">Cancelar</button>
+      <button class="btn btn-p" onclick="confirmReset()">Sí, reiniciar</button>
+    </div>
+  </div>
+</div>
 
+<div id="app">
 <!-- SIDEBAR -->
 <div id="sb">
   <div id="sb-top">
-    <div class="sb-ver">Onboarding · V 1.0</div>
+    <div class="sb-ver">Onboarding · V 2.0</div>
     <div class="sb-ttl">De cero a primer cierre</div>
     <div class="sb-sub">Onboarding para vendedores de automatización</div>
     <div class="sb-prog"><div class="sb-pfill" id="sb-pf" style="width:0%"></div></div>
@@ -328,20 +524,20 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
   <div class="sb-map-lbl">Mapa del curso</div>
   <div id="sb-nav"></div>
   <div class="sb-bottom">
-    <div class="sb-bot-btn"><i class="ti ti-settings" style="font-size:13px"></i> Configuración</div>
-    <div class="sb-bot-btn" onclick="goTo(0)"><i class="ti ti-refresh" style="font-size:13px"></i> Reiniciar curso</div>
+    <div class="sb-bot-btn" onclick="toggleDark()"><i class="ti ti-moon" style="font-size:13px"></i> <span id="dark-lbl">Modo oscuro</span></div>
+    <div class="sb-bot-btn" onclick="document.getElementById('reset-modal').classList.add('on')"><i class="ti ti-refresh" style="font-size:13px"></i> Reiniciar curso</div>
   </div>
 </div>
 
 <!-- MAIN -->
 <div id="main">
   <div id="tb">
+    <div id="hamburger" onclick="toggleSb()"><i class="ti ti-menu-2" style="font-size:18px"></i></div>
     <span class="tb-lbl" id="tb-lbl">01 / 14</span>
     <span class="tb-sect" id="tb-sect"></span>
     <div id="tb-bw"><div id="tb-bf" style="width:0%"></div></div>
     <span class="tb-pct" id="tb-pct">0%</span>
-    <i class="ti ti-moon tb-ic"></i>
-    <i class="ti ti-maximize tb-ic"></i>
+    <i class="ti ti-moon tb-ic" onclick="toggleDark()" title="Modo oscuro"></i>
     <div id="tb-user">
       <div id="tb-avatar">S</div>
       <span id="tb-greeting">Bienvenido/a</span>
@@ -350,64 +546,119 @@ h1.st{font-family:var(--ff-head);font-size:42px;font-weight:500;color:var(--txt)
   <div id="content"></div>
   <div id="fn">
     <button class="btn btn-s" id="btn-back" onclick="nav(-1)">← Anterior</button>
-    <div class="fn-meta" id="fn-hint"></div>
+    <div class="fn-meta" id="fn-hint">
+      <span class="kb-hint"><span class="kb">←</span><span class="kb">→</span> navegar</span>
+    </div>
     <button class="btn btn-p" id="btn-next" onclick="nav(1)">Siguiente →</button>
   </div>
 </div>
-
 </div><!-- #app -->
 
 <script>
 const MODS=[
-  {num:'01',name:'¿Qué vendemos?',dur:'60 min',slides:[
+  {num:'01',name:'¿Qué vendemos?',dur:'75 min',slides:[
     {id:'w',lbl:'Bienvenida',t:'welcome'},
+    {id:'1.02',lbl:'¿Cuánto cuesta el tiempo?',t:'calc_time'},
     {id:'1.01',lbl:'El primer paso para vender',t:'cards'},
     {id:'1.05',lbl:'¿Qué no es automatización?',t:'acc_dif'},
+    {id:'1.06',lbl:'El catálogo de servicios',t:'services_catalog'},
     {id:'1.07',lbl:'Servicio → Problema',t:'dragdrop'},
-    {id:'1.11',lbl:'Verifica tu comprensión',t:'quiz1'}
+    {id:'1.08',lbl:'¿Por qué nosotros?',t:'value_prop'},
+    {id:'1.11',lbl:'Verifica tu comprensión',t:'quiz1'},
+    {id:'1.12',lbl:'Reto de cierre',t:'reflect_close1'}
   ]},
-  {num:'02',name:'Conoce a tu cliente',dur:'75 min',slides:[
-    {id:'2.03',lbl:'Buyer personas: Laura, Diego, Paola',t:'cards_bp'},
+  {num:'02',name:'Conoce a tu cliente',dur:'90 min',slides:[
+    {id:'2.02',lbl:'Tres personas, tres mundos',t:'cards_bp'},
+    {id:'2.06',lbl:'¿A quién tienes adelante?',t:'profile_quiz'},
+    {id:'2.07',lbl:'El iceberg del cliente',t:'iceberg_content'},
     {id:'2.08',lbl:'El modelo SPIN',t:'acc_spin'},
     {id:'2.10',lbl:'Simula la primera llamada',t:'branch'}
   ]},
   {num:'03',name:'El discurso de ventas',dur:'90 min',slides:[
     {id:'3.02',lbl:'¿Cómo suenan tus 60 segundos?',t:'reflect'},
-    {id:'3.07',lbl:'Construye tu pitch',t:'pitch'}
+    {id:'3.07',lbl:'Construye tu pitch',t:'pitch'},
+    {id:'3.09',lbl:'Manejo de objeciones',t:'fff_model'},
+    {id:'3.11',lbl:'Practica las respuestas',t:'objections_practice'}
   ]},
   {num:'04',name:'El proceso comercial',dur:'75 min',slides:[
     {id:'4.01',lbl:'El pipeline de la agencia',t:'pipeline'},
     {id:'4.08',lbl:'La propuesta: estructura y lógica',t:'acc_prop'},
     {id:'4.11',lbl:'Verifica tu comprensión',t:'quiz4'}
   ]},
-  {num:'05',name:'Cierre, handoff y éxito del cliente',dur:'60 min',slides:[
+  {num:'05',name:'Cierre, handoff y éxito del cliente',dur:'75 min',slides:[
+    {id:'5.03',lbl:'Cierre consultivo vs. presión',t:'close_compare'},
     {id:'5.04',lbl:'Señales de compra',t:'acc_signals'},
     {id:'5.06',lbl:'El handoff: sin fricciones',t:'steps'},
     {id:'5.07',lbl:'Simula el cierre',t:'scenario_close'},
+    {id:'5.09',lbl:'Los primeros 90 días',t:'plan_90'},
     {id:'5.11',lbl:'¡Completado!',t:'complete'}
   ]}
 ];
 const flat=[];
 MODS.forEach((m,mi)=>m.slides.forEach((s,si)=>flat.push({...s,mi,si})));
 const TOT=flat.length;
-let cur=0,done=new Set(),uname='',qAns=false,brStep=0,
+
+// ── STATE ─────────────────────────────────
+let cur=0,done=new Set(),uname='',qAns=false,qIdx=0,brStep=0,
     pData={L:{g:'',p:'',c:'',pr:''},D:{g:'',p:'',c:'',pr:''},Pa:{g:'',p:'',c:'',pr:''}},
-    aprof='L',pipeSelIdx=null,scStep=0;
+    aprof='L',pipeSelIdx=null,scStep=0,isDark=false,pitchReflect='',reflectClose1='',
+    plan90={m1:{obj:'',canal:'',msg:'',accion:''},m2:{obj:'',canal:'',msg:'',accion:''},m3:{obj:'',canal:'',msg:'',accion:''}};
 
+// ── LOCALSTORAGE ──────────────────────────
+function saveState(){
+  try{
+    localStorage.setItem('hf_ob_v2',JSON.stringify({
+      cur,done:[...done],uname,pData,aprof,isDark,pitchReflect,reflectClose1,plan90
+    }));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem('hf_ob_v2');
+    if(!raw)return;
+    const d=JSON.parse(raw);
+    cur=d.cur||0;
+    done=new Set(d.done||[]);
+    uname=d.uname||'';
+    pData=d.pData||{L:{g:'',p:'',c:'',pr:''},D:{g:'',p:'',c:'',pr:''},Pa:{g:'',p:'',c:'',pr:''}};
+    aprof=d.aprof||'L';
+    isDark=!!d.isDark;
+    pitchReflect=d.pitchReflect||'';
+    reflectClose1=d.reflectClose1||'';
+    plan90=d.plan90||{m1:{obj:'',canal:'',msg:'',accion:''},m2:{obj:'',canal:'',msg:'',accion:''},m3:{obj:'',canal:'',msg:'',accion:''}};
+    if(isDark)document.body.classList.add('dark');
+    document.getElementById('dark-lbl').textContent=isDark?'Modo claro':'Modo oscuro';
+  }catch(e){}
+}
+
+// ── DARK MODE ─────────────────────────────
+function toggleDark(){
+  isDark=!isDark;
+  document.body.classList.toggle('dark',isDark);
+  document.getElementById('dark-lbl').textContent=isDark?'Modo claro':'Modo oscuro';
+  saveState();
+}
+
+// ── MOBILE SIDEBAR ────────────────────────
+function toggleSb(){
+  const sb=document.getElementById('sb');
+  const ov=document.getElementById('sb-overlay');
+  const open=sb.classList.toggle('mob-open');
+  ov.classList.toggle('on',open);
+}
+function closeSb(){
+  document.getElementById('sb').classList.remove('mob-open');
+  document.getElementById('sb-overlay').classList.remove('on');
+}
+
+// ── HELPERS ───────────────────────────────
 function pct(){return Math.round((done.size/(TOT-1))*100)}
-
 function updateGreeting(){
   const av=document.getElementById('tb-avatar');
   const gr=document.getElementById('tb-greeting');
-  if(uname){
-    av.textContent=uname.charAt(0).toUpperCase();
-    gr.textContent='Bienvenido/a, '+uname;
-  } else {
-    av.textContent='S';
-    gr.textContent='Bienvenido/a';
-  }
+  if(uname){av.textContent=uname.charAt(0).toUpperCase();gr.textContent='Hola, '+uname;}
+  else{av.textContent='S';gr.textContent='Bienvenido/a';}
 }
-
 function buildSb(){
   const nav=document.getElementById('sb-nav');nav.innerHTML='';
   MODS.forEach((m,mi)=>{
@@ -425,7 +676,7 @@ function buildSb(){
       </div>
       <i class="ti ti-chevron-down sb-chev"></i></div>
       <div class="sb-slides">${ms.map((s,si)=>{const gi=mStart+si;const isA=gi===cur;const isD=done.has(gi);
-        return`<div class="sb-slide${isA?' act':isD?' done':''}" onclick="goTo(${gi})"><div class="sb-dot"></div>${s.lbl}</div>`;
+        return`<div class="sb-slide${isA?' act':isD?' done':''}" onclick="goTo(${gi});closeSb()"><div class="sb-dot"></div>${s.lbl}</div>`;
       }).join('')}</div>`;
     nav.appendChild(div);
   });
@@ -433,11 +684,10 @@ function buildSb(){
   document.getElementById('sb-pf').style.width=p+'%';
   document.getElementById('sb-pc').textContent=p+'%';
 }
-
 function updateTb(){
   const s=flat[cur];const m=MODS[s.mi];
   document.getElementById('tb-lbl').textContent=String(cur+1).padStart(2,'0')+' / '+TOT;
-  document.getElementById('tb-sect').textContent=m?'Módulo '+m.num+' / '+m.name:'';
+  document.getElementById('tb-sect').textContent=m?'Módulo '+m.num+' · '+m.name:'';
   const p=pct();
   document.getElementById('tb-bf').style.width=p+'%';
   document.getElementById('tb-pct').textContent=p+'%';
@@ -447,13 +697,26 @@ function updateTb(){
   updateGreeting();
 }
 
-function goTo(i){cur=i;qAns=false;brStep=0;pipeSelIdx=null;scStep=0;render();}
+// ── NAVIGATION ────────────────────────────
+function goTo(i){cur=i;qAns=false;qIdx=0;brStep=0;pipeSelIdx=null;scStep=0;renderWithFade();}
 function nav(d){
-  if(d===1&&cur<TOT-1){done.add(cur);cur++;qAns=false;brStep=0;pipeSelIdx=null;scStep=0;render();}
-  else if(d===-1&&cur>0){cur--;qAns=false;brStep=0;pipeSelIdx=null;scStep=0;render();}
+  if(d===1&&cur<TOT-1){done.add(cur);cur++;qAns=false;qIdx=0;brStep=0;pipeSelIdx=null;scStep=0;saveState();renderWithFade();}
+  else if(d===-1&&cur>0){cur--;qAns=false;qIdx=0;brStep=0;pipeSelIdx=null;scStep=0;saveState();renderWithFade();}
 }
-function resetNextBtn(){
-  const nb=document.getElementById('btn-next');nb.disabled=false;nb.style.opacity='1';
+function confirmReset(){
+  cur=0;done=new Set();uname='';qAns=false;qIdx=0;brStep=0;pipeSelIdx=null;scStep=0;
+  pData={L:{g:'',p:'',c:'',pr:''},D:{g:'',p:'',c:'',pr:''},Pa:{g:'',p:'',c:'',pr:''}};
+  pitchReflect='';aprof='L';
+  saveState();
+  document.getElementById('reset-modal').classList.remove('on');
+  renderWithFade();
+}
+
+// ── TRANSITION ────────────────────────────
+function renderWithFade(){
+  const el=document.getElementById('content');
+  el.classList.add('fading');
+  setTimeout(()=>{el.classList.remove('fading');render();},160);
 }
 
 function render(){
@@ -461,20 +724,28 @@ function render(){
   const s=flat[cur];
   const el=document.getElementById('content');
   const hint=document.getElementById('fn-hint');
-  hint.textContent='';el.innerHTML='';el.scrollTop=0;
-  const R={welcome,cards,acc_dif,dragdrop,quiz1,cards_bp,acc_spin,branch,reflect,pitch,pipeline,acc_prop,quiz4,acc_signals,steps,scenario_close,complete};
+  hint.innerHTML='<span class="kb-hint"><span class="kb">←</span><span class="kb">→</span> navegar</span>';
+  el.innerHTML='';el.scrollTop=0;
+  const R={welcome,calc_time,cards,acc_dif,services_catalog,dragdrop,value_prop,quiz1,reflect_close1,cards_bp,profile_quiz,iceberg_content,acc_spin,branch,reflect,pitch,fff_model,objections_practice,pipeline,acc_prop,quiz4,close_compare,acc_signals,steps,scenario_close,plan_90,complete};
   R[s.t](el,s,hint);
 }
 
 function modTag(mi){const m=MODS[mi];return'<div class="mod-tag"><i class="ti ti-chevron-right"></i>MÓDULO '+m.num+' · '+m.name.toUpperCase()+'</div>';}
 function t(p,i){document.getElementById(p+'-'+i).classList.toggle('open');}
 
-// ── SLIDES ────────────────────────────────────────────────
+// ── KEYBOARD NAVIGATION ───────────────────
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName.toLowerCase();
+  if(tag==='input'||tag==='textarea')return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')nav(1);
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp')nav(-1);
+});
+
+// ── SLIDES ────────────────────────────────
 
 function welcome(el){
   el.innerHTML=`
     <div class="hero">
-      <!-- LEFT: text content -->
       <div class="hero-l">
         <div class="hero-badge"><i class="ti ti-bolt"></i>Curso · Onboarding</div>
         <div class="hero-ttl">De cero a primer cierre</div>
@@ -489,7 +760,6 @@ function welcome(el){
           <li><span class="obj-bullet"><i class="ti ti-check"></i></span>Cerrar con confianza y ejecutar el handoff</li>
         </ul>
       </div>
-      <!-- RIGHT: photo placeholder -->
       <div class="hero-r">
         <div style="width:100%;height:100%;background:linear-gradient(135deg,#d4c8ba 0%,#c0b4a4 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px">
           <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center">
@@ -504,36 +774,37 @@ function welcome(el){
             <div style="width:1px;background:rgba(255,255,255,.2)"></div>
             <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:rgba(255,255,255,.85)">5</div><div style="font-size:10px;color:rgba(255,255,255,.55)">módulos</div></div>
             <div style="width:1px;background:rgba(255,255,255,.2)"></div>
-            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:rgba(255,255,255,.85)">54</div><div style="font-size:10px;color:rgba(255,255,255,.55)">slides</div></div>
+            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:rgba(255,255,255,.85)">${TOT}</div><div style="font-size:10px;color:rgba(255,255,255,.55)">slides</div></div>
           </div>
         </div>
       </div>
     </div>
-    <!-- Before begin -->
     <div class="bb">
       <div class="bb-lbl">Antes de comenzar</div>
       <h3>¿Cuál es tu nombre?</h3>
       <p>Lo usaremos para personalizar el curso y tu certificado al finalizar.</p>
       <div class="bb-row">
-        <input id="ni" type="text" placeholder="Escribe tu nombre aquí" value="${uname}"/>
+        <input id="ni" type="text" placeholder="Escribe tu nombre aquí" value="${uname}" onkeydown="if(event.key==='Enter')saveN()"/>
         <button class="btn btn-p" onclick="saveN()">Comenzar entrenamiento →</button>
       </div>
       <div class="bb-meta">Duración estimada · 6–8 horas · Vendedores B2B nuevos en automatización</div>
     </div>`;
+  setTimeout(()=>document.getElementById('ni')&&document.getElementById('ni').focus(),100);
 }
 function saveN(){
   const v=document.getElementById('ni').value.trim();
-  if(v){uname=v;updateGreeting();nav(1);}
+  if(v){uname=v;saveState();updateGreeting();nav(1);}
 }
 
 function cards(el){
+  const cs=[
+    {icon:'ti-robot',tag:'Card 1 de 3',title:'El problema real',body:'El tiempo que los equipos operativos dedican a tareas repetitivas es el costo invisible que nadie calcula — hasta que llega alguien que sí lo hace.'},
+    {icon:'ti-currency-dollar',tag:'Card 2 de 3',title:'Lo que vendemos',body:'No vendemos software — vendemos tiempo recuperado, errores eliminados y procesos que funcionan solos. Esa es la conversación que tienes que tener.'},
+    {icon:'ti-bulb',tag:'Card 3 de 3',title:'Tu ventaja',body:'Cuando entiendes el producto mejor que nadie, cada conversación se convierte en una demostración de confianza antes de cerrar cualquier trato.'}
+  ];
   el.innerHTML=modTag(0)+`<h1 class="st">El primer paso para vender es entender</h1>
     <p class="ss">Tu cliente tiene 40 personas procesando cotizaciones a mano. Tú eres quien puede cambiar eso — pero primero tienes que entender qué le vas a vender.</p>
-    <div class="cards-g">
-      <div class="card"><div class="ctag">Card 1 de 3</div><i class="ti ti-robot ci"></i><h4>El problema real</h4><p>El tiempo que los equipos operativos dedican a tareas repetitivas es el costo invisible que nadie calcula — hasta que llega alguien que sí lo hace.</p></div>
-      <div class="card"><div class="ctag">Card 2 de 3</div><i class="ti ti-currency-dollar ci"></i><h4>Lo que vendemos</h4><p>No vendemos software — vendemos tiempo recuperado, errores eliminados y procesos que funcionan solos. Esa es la conversación que tienes que tener.</p></div>
-      <div class="card"><div class="ctag">Card 3 de 3</div><i class="ti ti-bulb ci"></i><h4>Tu ventaja</h4><p>Cuando entiendes el producto mejor que nadie, cada conversación se convierte en una demostración de confianza antes de cerrar cualquier trato.</p></div>
-    </div>`;
+    <div class="cards-g">${cs.map((c,i)=>`<div class="card card-anim" style="animation-delay:${i*0.28}s"><div class="ctag">${c.tag}</div><i class="ti ${c.icon} ci"></i><h4>${c.title}</h4><p>${c.body}</p></div>`).join('')}</div>`;
 }
 
 function acc_dif(el){
@@ -564,44 +835,75 @@ function dragdrop(el,s,hint){
     ch.textContent=sv;ch.style.display='inline-block';lb.style.opacity='.4';
     dz.classList.remove('ok','no');dz.classList.add(sv===dz.dataset.ok?'ok':'no');
     window._dst[i]=sv===dz.dataset.ok;
-    if(Object.keys(window._dst).length===4){const all=Object.values(window._dst).every(Boolean);const r=document.getElementById('ddres');r.textContent=all?'¡Perfecto! Todos en el lugar correcto.':'Algunos no coinciden — inténtalo de nuevo.';r.style.color=all?'var(--olive)':'var(--terra)';}
+    if(Object.keys(window._dst).length===4){const all=Object.values(window._dst).every(Boolean);const r=document.getElementById('ddres');r.textContent=all?'¡Perfecto! Todos en el lugar correcto.':'Algunos no coinciden — inténtalo de nuevo arrastrando de nuevo.';r.style.color=all?'var(--olive)':'var(--terra)';}
   };
 }
 
-function renderQuiz(el,mi,q,hint){
+// ── QUIZ (multi-question) ─────────────────
+function renderQuiz(el,mi,questions,hint){
+  const q=questions[qIdx];
+  const tot=questions.length;
   const nb=document.getElementById('btn-next');
-  if(!qAns){nb.disabled=true;nb.style.opacity='0.35';}
+  nb.disabled=true;nb.style.opacity='0.35';
   el.innerHTML=modTag(mi)+`<h1 class="st">Verifica tu comprensión</h1>
     <p class="ss">Antes de avanzar, comprueba qué tan sólido tienes esto.</p>
     <div class="qcard">
-      <div class="q-meta">PREGUNTA 1 DE 2</div>
+      <div class="q-meta">PREGUNTA ${qIdx+1} DE ${tot}</div>
       <div class="q-txt">${q.txt}</div>
       <div class="qopts">${q.opts.map((o,i)=>`<button class="qo" id="qo-${i}" onclick="selQ(${i})"><div class="ql">${String.fromCharCode(65+i)}</div>${o}</button>`).join('')}</div>
       <div id="qfb" style="display:none"></div>
       <div class="q-footer">
-        <button class="q-confirm-btn" id="q-confirm" onclick="ansQ(${q.cor},\`${q.ok}\`,\`${q.nok}\`)">Confirmar respuesta →</button>
+        <button class="q-confirm" id="q-confirm" onclick="ansQ()">Confirmar respuesta →</button>
       </div>
     </div>`;
-  if(!qAns)hint.innerHTML='<i class="ti ti-info-circle"></i> Selecciona una respuesta';
-  window._qSel=null;
+  hint.innerHTML='<span style="font-size:13px;color:var(--txt-lt)"><i class="ti ti-info-circle"></i> Selecciona una respuesta</span>';
+  window._qqs=questions;window._qSel=null;window._qmi=mi;window._qel=el;window._qhint=hint;
   window.selQ=(i)=>{
     window._qSel=i;
-    document.querySelectorAll('.qo').forEach((b,j)=>{b.classList.remove('qo-pending');if(j===i)b.classList.add('qo-pending');});
-    const cb=document.getElementById('q-confirm');cb.classList.add('ready');
+    document.querySelectorAll('.qo').forEach((b,j)=>{b.classList.remove('qo-sel');if(j===i)b.classList.add('qo-sel');});
+    document.getElementById('q-confirm').classList.add('on');
   };
-  window.ansQ=(cor,ok,nok)=>{
+  window.ansQ=()=>{
     if(window._qSel===null||qAns)return;qAns=true;
-    const ch=window._qSel;const isOk=ch===cor;
-    document.querySelectorAll('.qo').forEach(b=>{b.disabled=true;b.classList.remove('qo-pending');});
+    const ch=window._qSel;const isOk=ch===q.cor;
+    document.querySelectorAll('.qo').forEach(b=>{b.disabled=true;b.classList.remove('qo-sel');});
     document.getElementById('qo-'+ch).classList.add(isOk?'cor':'wr');
-    if(!isOk)document.getElementById('qo-'+cor).classList.add('cor');
-    const fb=document.getElementById('qfb');fb.className='qfb '+(isOk?'ok':'nok');fb.textContent=isOk?ok:nok;fb.style.display='block';
-    document.getElementById('q-confirm').style.display='none';
-    hint.innerHTML='';nb.disabled=false;nb.style.opacity='1';
+    if(!isOk)document.getElementById('qo-'+q.cor).classList.add('cor');
+    const fb=document.getElementById('qfb');
+    fb.className='qfb '+(isOk?'ok':'nok');fb.textContent=isOk?q.ok:q.nok;fb.style.display='block';
+    hint.innerHTML='';
+    if(qIdx<window._qqs.length-1){
+      document.getElementById('q-confirm').outerHTML=
+        '<button class="br-sig" style="margin-top:0" onclick="qNext()">Siguiente pregunta →</button>';
+    } else {
+      document.getElementById('q-confirm').style.display='none';
+      nb.disabled=false;nb.style.opacity='1';
+    }
   };
+  window.qNext=()=>{qAns=false;qIdx++;renderQuiz(window._qel,window._qmi,window._qqs,window._qhint);};
 }
-function quiz1(el,s,hint){renderQuiz(el,0,{txt:'Un cliente dice: "Quiero que me construyan un sistema de ventas desde cero." ¿Cuál es la respuesta más honesta y efectiva?',opts:['Perfecto, podemos hacer eso.','Eso es desarrollo a medida; nosotros automatizamos procesos que ya existen en tu empresa.','No es nuestro servicio — llama a otro.','Depende del presupuesto que tengas disponible.'],cor:1,ok:'Exacto. Identificar cuándo el cliente pide algo fuera de tu alcance te ahorra tiempo y proyecta honestidad.',nok:'Revisa la diferencia entre automatización y desarrollo a medida. El cliente describe una construcción desde cero.'},hint);}
-function quiz4(el,s,hint){renderQuiz(el,3,{txt:'¿En qué etapa del pipeline es más apropiado preguntar por el presupuesto disponible?',opts:['En el primer contacto, para no perder tiempo si no hay presupuesto.','Después de la reunión de descubrimiento, cuando ya entiendes el problema.','Al enviar la propuesta, como parte del documento.','Nunca — el cliente siempre lo dice solo si está interesado.'],cor:1,ok:'Correcto. Después del descubrimiento, el cliente ya siente el costo del problema — la conversación de precio cambia.',nok:'En el primer contacto es demasiado pronto. El momento ideal es después del descubrimiento.'},hint);}
+
+function quiz1(el,s,hint){
+  renderQuiz(el,0,[
+    {txt:'Un cliente dice: "Quiero que me construyan un sistema de ventas desde cero." ¿Cuál es la respuesta más honesta y efectiva?',
+     opts:['Perfecto, podemos hacer eso.','Eso es desarrollo a medida; nosotros automatizamos procesos que ya existen en tu empresa.','No es nuestro servicio — llama a otro.','Depende del presupuesto que tengas disponible.'],
+     cor:1,ok:'Exacto. Identificar cuándo el cliente pide algo fuera de tu alcance te ahorra tiempo y proyecta honestidad.',nok:'Revisa la diferencia entre automatización y desarrollo a medida. El cliente describe una construcción desde cero.'},
+    {txt:'¿Cuál de estas frases describe mejor lo que vende la agencia?',
+     opts:['Software personalizado para cada cliente.','Consultoría estratégica de transformación digital.','Tiempo recuperado, errores eliminados y procesos que funcionan solos.','Outsourcing de equipos de operaciones.'],
+     cor:2,ok:'Correcto. No vendemos tecnología — vendemos los resultados que la tecnología produce.',nok:'Recuerda: la propuesta de valor no está en el qué, sino en el impacto que genera.'}
+  ],hint);
+}
+
+function quiz4(el,s,hint){
+  renderQuiz(el,3,[
+    {txt:'¿En qué etapa del pipeline es más apropiado preguntar por el presupuesto disponible?',
+     opts:['En el primer contacto, para no perder tiempo si no hay presupuesto.','Después de la reunión de descubrimiento, cuando ya entiendes el problema.','Al enviar la propuesta, como parte del documento.','Nunca — el cliente siempre lo dice solo si está interesado.'],
+     cor:1,ok:'Correcto. Después del descubrimiento, el cliente ya siente el costo del problema — la conversación de precio cambia.',nok:'En el primer contacto es demasiado pronto. El momento ideal es después del descubrimiento.'},
+    {txt:'¿Cuál es el principal objetivo de la reunión de descubrimiento?',
+     opts:['Presentar los servicios de la agencia con un deck completo.','Hacer que el cliente firme lo antes posible.','Entender el problema del cliente con suficiente profundidad para proponer una solución real.','Demostrar las capacidades técnicas del equipo.'],
+     cor:2,ok:'Exacto. El descubrimiento no es para hablar — es para escuchar y entender.',nok:'La reunión de descubrimiento es el momento de hacer preguntas SPIN, no de vender todavía.'}
+  ],hint);
+}
 
 function cards_bp(el){
   el.innerHTML=modTag(1)+`<h1 class="st">Tres personas, tres mundos</h1>
@@ -638,6 +940,18 @@ function branch(el,s,hint){
       {t:'¿Cuántos clientes les contactan por esa vía al día?',q:'bad',fb:'Útil para contexto, pero no lleva al dolor. Necesitas que Carlos sienta el costo.'},
       {t:'¿Eso les ha generado problemas con sus clientes?',q:'best',fb:'Pregunta de Implicación — hace que Carlos conecte el proceso roto con consecuencias reales.'},
       {t:'¿Cuánto tiempo llevan trabajando así?',q:'bad',fb:'Pregunta de situación — da contexto pero no avanza hacia el dolor ni la urgencia.'}
+    ]},
+    {bbl:'"Sí, tuvimos tres reclamos formales el mes pasado. El gerente general ya nos preguntó qué está pasando."',pr:'¿Qué respondes ahora?',opts:[
+      {t:'Entiendo. Nosotros podemos solucionar eso.',q:'bad',fb:'Propones antes de que Carlos pida la solución. Quemas la oportunidad de que él la pida.'},
+      {t:'¿Y eso cuánto les está costando en tiempo de su equipo?',q:'best',fb:'Pregunta de Implicación — expande el costo real del problema antes de abrir la solución.'},
+      {t:'¿Qué tan urgente es para ustedes resolverlo?',q:'best',fb:'Pregunta de Necesidad — detecta si hay una decisión real detrás. También válida aquí.'},
+      {t:'¿Querrían ver una propuesta?',q:'bad',fb:'Demasiado apresurado. Todavía no sabes si hay presupuesto ni decisores involucrados.'}
+    ]},
+    {bbl:'"Bastante urgente. Ya no podemos seguir así."',pr:'Carlos está listo. ¿Cuál es tu siguiente movimiento?',opts:[
+      {t:'Perfecto. ¿Cuándo podemos hacer una demo?',q:'bad',fb:'Útil, pero incompleto. Antes de agendar, necesitas saber quién más decide.'},
+      {t:'Tenemos exactamente lo que necesitan. Les mando propuesta hoy.',q:'bad',fb:'Vas demasiado rápido. Sin mapear a los decisores, la propuesta puede quedarse en la bandeja de Carlos.'},
+      {t:'¿Quién más en la empresa estaría involucrado en esta decisión?',q:'best',fb:'Perfecto. Mapear a los decisores antes de proponer es la diferencia entre una propuesta que avanza y una que se congela.'},
+      {t:'¿Cuánto presupuesto manejan para esto?',q:'bad',fb:'Puede hacerse, pero primero necesitas saber quién decide — sin eso el número no tiene contexto.'}
     ]}
   ];
   const m=moms[Math.min(brStep,moms.length-1)];
@@ -647,50 +961,50 @@ function branch(el,s,hint){
     <div class="bubble">${m.bbl}</div><div class="br-prompt">${m.pr}</div>
     <div class="bropts">${m.opts.map((o,i)=>`<button class="brbtn" id="bb-${i}" onclick="brAns(${i})"><div class="brltr">${String.fromCharCode(65+i)}</div>${o.t}</button>`).join('')}</div>
     <div id="brfb"></div>`;
-  // Disable Siguiente until all moments completed
+  // Disable Siguiente until last moment answered
   const nb=document.getElementById('btn-next');
   if(brStep===0){nb.disabled=true;nb.style.opacity='0.35';}
-  // Add footer with confirm button
-  el.querySelector('.bropts').insertAdjacentHTML('afterend',
-    `<div id="brfb"></div>
-     <div class="br-footer">
-       <span class="back-disabled-lbl" id="br-back-lbl"></span>
-       <button class="br-confirm-btn" id="br-confirm" onclick="brConfirm()">Confirmar →</button>
+  el.querySelector('#brfb').insertAdjacentHTML('afterend',
+    `<div class="br-footer" id="br-ft">
+       <span class="br-disabled-lbl" id="br-dlbl"></span>
+       <button class="br-confirm" id="br-confirm" onclick="brConfirm()">Confirmar →</button>
      </div>`);
   window._brSel=null;
   window.brAns=(i)=>{
     window._brSel=i;
-    document.querySelectorAll('.brbtn').forEach((b,j)=>{b.classList.remove('br-pending');if(j===i)b.classList.add('br-pending');});
-    document.getElementById('br-confirm').classList.add('ready');
+    document.querySelectorAll('.brbtn').forEach((b,j)=>{b.classList.remove('br-sel');if(j===i)b.classList.add('br-sel');});
+    document.getElementById('br-confirm').classList.add('on');
   };
   window.brConfirm=()=>{
     if(window._brSel===null)return;
     const i=window._brSel;const o=m.opts[i];
-    document.querySelectorAll('.brbtn').forEach(b=>{b.disabled=true;b.classList.remove('br-pending');});
+    document.querySelectorAll('.brbtn').forEach(b=>{b.disabled=true;b.classList.remove('br-sel');});
     document.getElementById('bb-'+i).classList.add(o.q==='best'?'best':'bad');
     m.opts.forEach((x,j)=>{if(x.q==='best')document.getElementById('bb-'+j).classList.add('best');});
     document.getElementById('brfb').innerHTML=`<div class="brfb ${o.q==='best'?'g':'b'}">${o.fb}</div>`;
-    document.getElementById('br-back-lbl').textContent='Continuar deshabilitado';
+    document.getElementById('br-dlbl').textContent='Continuar deshabilitado';
     if(brStep<moms.length-1){
-      document.getElementById('br-confirm').outerHTML=`<button class="br-next-btn" onclick="brNext()">Siguiente momento →</button>`;
+      document.getElementById('br-confirm').outerHTML=
+        '<button class="br-sig" onclick="brNext()">Siguiente momento →</button>';
     } else {
       document.getElementById('br-confirm').style.display='none';
       nb.disabled=false;nb.style.opacity='1';
     }
   };
-  window.brNext=()=>{brStep++;render();};
+  window.brNext=()=>{brStep++;branch(el,s,hint);};
 }
 
 function reflect(el){
   el.innerHTML=modTag(2)+`<h1 class="st">¿Cómo suenan tus 60 segundos?</h1>
     <p class="ss">Antes de que te enseñe nada, escribe tu pitch actual. No hay respuesta mala — es simplemente desde dónde partes hoy.</p>
     <div class="rcard"><p>Esta es tu línea de base. Al final del módulo vas a comparar este pitch con el que construyas usando la estructura. La distancia entre los dos es lo que aprendiste.</p>
-    <textarea id="rta" placeholder="Escribe aquí tu pitch de 60 segundos..."></textarea>
+    <textarea id="rta" placeholder="Escribe aquí tu pitch de 60 segundos...">${pitchReflect}</textarea>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
-      <span id="rst" style="font-size:13px;color:var(--txt-xlt)">No guardado aún</span>
+      <span id="rst" style="font-size:13px;color:var(--txt-xlt)">${pitchReflect?'✓ Guardado.':'No guardado aún'}</span>
       <button class="btn btn-sv" onclick="saveR()">Guardar mi punto de partida</button>
     </div></div>`;
-  window.saveR=()=>{const v=document.getElementById('rta').value.trim();if(v.length>10){document.getElementById('rst').textContent='✓ Guardado. Continúa cuando quieras.';document.getElementById('rst').style.color='var(--olive)';}};
+  document.getElementById('rta').addEventListener('input',e=>{pitchReflect=e.target.value;saveState();document.getElementById('rst').textContent='Guardando...';});
+  window.saveR=()=>{const v=document.getElementById('rta').value.trim();if(v.length>10){pitchReflect=v;saveState();document.getElementById('rst').textContent='✓ Guardado. Continúa cuando quieras.';document.getElementById('rst').style.color='var(--olive)';}};
 }
 
 function pitch(el){
@@ -708,8 +1022,8 @@ function pitch(el){
       <div class="pitch-fields">${[{k:'g',l:'GANCHO'},{k:'p',l:'PROBLEMA'},{k:'c',l:'CÓMO'},{k:'pr',l:'PRUEBA'}].map(f=>`<div class="pf"><div class="pf-top"><span class="pf-lbl">${f.l}</span><span class="pf-cnt" id="fc-${f.k}">${d[f.k].length} car.</span></div><textarea id="pf-${f.k}" placeholder="${ph.h[f.k]}" oninput="updP('${f.k}')">${d[f.k]}</textarea><div class="pf-hint">${ph.h[f.k]}</div></div>`).join('')}</div>
       <div class="pp"><div class="pp-lbl">Vista previa</div><div class="pp-pname">PITCH PARA ${ph.name.toUpperCase()} — ${ph.role.toUpperCase()}</div><div class="pp-cnt" id="ppc">${bld().length} car.</div><div class="pp-txt" id="ppt">${bld()||'<span class="pp-ph">[gancho] [problema] [cómo] [prueba]</span>'}</div><div class="pp-toks">${['GANCHO','PROBLEMA','CÓMO','PRUEBA'].map((tk,i)=>{const ks=['g','p','c','pr'];return`<span class="pp-tok${d[ks[i]]?' on':''}">${tk}</span>`;}).join('')}</div></div>
     </div>`;
-  window.selP=(k)=>{aprof=k;pitch(el);};
-  window.updP=(k)=>{pData[aprof][k]=document.getElementById('pf-'+k).value;document.getElementById('fc-'+k).textContent=pData[aprof][k].length+' car.';const full=bld();document.getElementById('ppt').innerHTML=full||'<span class="pp-ph">[gancho] [problema] [cómo] [prueba]</span>';document.getElementById('ppc').textContent=full.length+' car.';const ks=['g','p','c','pr'];document.querySelectorAll('.pp-tok').forEach((tk,i)=>tk.className='pp-tok'+(pData[aprof][ks[i]]?' on':''));};
+  window.selP=(k)=>{aprof=k;saveState();pitch(el);};
+  window.updP=(k)=>{pData[aprof][k]=document.getElementById('pf-'+k).value;saveState();document.getElementById('fc-'+k).textContent=pData[aprof][k].length+' car.';const full=bld();document.getElementById('ppt').innerHTML=full||'<span class="pp-ph">[gancho] [problema] [cómo] [prueba]</span>';document.getElementById('ppc').textContent=full.length+' car.';const ks=['g','p','c','pr'];document.querySelectorAll('.pp-tok').forEach((tk,i)=>tk.className='pp-tok'+(pData[aprof][ks[i]]?' on':''));};
 }
 
 function pipeline(el){
@@ -764,7 +1078,7 @@ function steps(el){
   el.innerHTML=modTag(4)+`<h1 class="st">El handoff: sin fricciones</h1>
     <p class="ss">Un mal handoff es la causa número uno de proyectos que empiezan mal. Cinco pasos, en orden.</p>
     <div class="slist">${st.map((x,i)=>`<div class="sitem"><div class="snum">${i+1}</div><div><h5>${x.t}</h5><p>${x.d}</p></div></div>`).join('')}</div>
-    <button class="btn btn-s" style="font-size:13px"><i class="ti ti-printer" style="font-size:14px;margin-right:6px"></i>Guardar / imprimir como referencia</button>`;
+    <button class="btn btn-s" style="font-size:13px" onclick="window.print()"><i class="ti ti-printer" style="font-size:14px;margin-right:6px"></i>Imprimir como referencia</button>`;
 }
 
 function scenario_close(el){
@@ -780,6 +1094,18 @@ function scenario_close(el){
       {t:'En proyectos similares hemos visto impacto operativo en las primeras 4 semanas.',q:'best',fb:'Específico, con evidencia de proyectos anteriores, sin prometer lo que no controlas.'},
       {t:'Les garantizamos resultados en 30 días o devolvemos el dinero.',q:'bad',fb:'Prometes lo que no controlas. Si el cliente demora el kickoff, el cronograma cambia pero la promesa no.'},
       {t:'Eso lo define el equipo técnico después de firmar.',q:'bad',fb:'Delega la respuesta al futuro — el cliente necesita información ahora para decidir.'}
+    ]},
+    {scene:'El jefe pregunta: "¿Y si no funciona como esperamos?"',q:'¿Cómo manejas esta objeción?',opts:[
+      {t:'Eso no va a pasar, tenemos mucha experiencia.',q:'bad',fb:'Descarta la preocupación sin validarla. El cliente siente que lo ignoras.'},
+      {t:'Entiendo la preocupación. ¿Qué le daría mayor tranquilidad para avanzar?',q:'best',fb:'Perfecto. Validas la emoción y la redirigen hacia una solución concreta — sin prometer en exceso.'},
+      {t:'Podemos hacer un piloto acotado para reducir el riesgo.',q:'best',fb:'También válido si la agencia lo ofrece. Reduce la barrera de entrada sin comprometer el alcance completo.'},
+      {t:'Tenemos garantía de satisfacción en todos nuestros proyectos.',q:'bad',fb:'Demasiado vaga. "Garantía de satisfacción" sin definir qué significa genera desconfianza.'}
+    ]},
+    {scene:'El jefe dice: "Bien. ¿Cuáles son los próximos pasos?"',q:'El cierre está a punto de darse. ¿Qué haces?',opts:[
+      {t:'Les mando el contrato por email.',q:'bad',fb:'Reactivo. El contrato puede quedarse en la bandeja semanas. Necesitas acordar una fecha concreta ahora.'},
+      {t:'Le agendo una llamada con el equipo técnico para esta semana.',q:'bad',fb:'Metes un paso extra antes del cierre. El cliente ya decidió — no agregues fricción.'},
+      {t:'Definamos juntos una fecha de inicio y yo coordino el resto desde aquí.',q:'best',fb:'Cierre con acción concreta acordada en la reunión. Nunca te vayas sin una fecha.'},
+      {t:'Perfecto. Los contacto mañana con los detalles.',q:'bad',fb:'Mañana puede ser la semana que viene. Cierra con una acción específica antes de salir de la sala.'}
     ]}
   ];
   const m=moms[Math.min(scStep,moms.length-1)];
@@ -791,31 +1117,30 @@ function scenario_close(el){
       <div class="bropts">${m.opts.map((o,i)=>`<button class="brbtn" id="sc-${i}" onclick="scAns(${i})"><div class="brltr">${String.fromCharCode(65+i)}</div>${o.t}</button>`).join('')}</div>
       <div id="scfb"></div></div>
     </div>`;
-  // Disable Siguiente until all moments completed
   const nb=document.getElementById('btn-next');
   if(scStep===0){nb.disabled=true;nb.style.opacity='0.35';}
-  // Add footer with confirm button inside sc-body
   el.querySelector('#scfb').insertAdjacentHTML('afterend',
-    `<div class="br-footer" style="border-top:1px solid rgba(255,255,255,.15);margin-top:16px;padding-top:14px">
-       <span class="back-disabled-lbl" id="sc-back-lbl"></span>
-       <button class="br-confirm-btn" id="sc-confirm" onclick="scConfirm()">Confirmar →</button>
+    `<div class="br-footer" id="sc-ft">
+       <span class="br-disabled-lbl" id="sc-dlbl"></span>
+       <button class="br-confirm" id="sc-confirm" onclick="scConfirm()">Confirmar →</button>
      </div>`);
   window._scSel=null;
   window.scAns=(i)=>{
     window._scSel=i;
-    document.querySelectorAll('.brbtn').forEach((b,j)=>{b.classList.remove('br-pending');if(j===i)b.classList.add('br-pending');});
-    document.getElementById('sc-confirm').classList.add('ready');
+    document.querySelectorAll('.brbtn').forEach((b,j)=>{b.classList.remove('br-sel');if(j===i)b.classList.add('br-sel');});
+    document.getElementById('sc-confirm').classList.add('on');
   };
   window.scConfirm=()=>{
     if(window._scSel===null)return;
     const i=window._scSel;const o=m.opts[i];
-    document.querySelectorAll('.brbtn').forEach(b=>{b.disabled=true;b.classList.remove('br-pending');});
+    document.querySelectorAll('.brbtn').forEach(b=>{b.disabled=true;b.classList.remove('br-sel');});
     document.getElementById('sc-'+i).classList.add(o.q==='best'?'best':'bad');
     m.opts.forEach((x,j)=>{if(x.q==='best')document.getElementById('sc-'+j).classList.add('best');});
     document.getElementById('scfb').innerHTML=`<div class="brfb ${o.q==='best'?'g':'b'}">${o.fb}</div>`;
-    document.getElementById('sc-back-lbl').textContent='Continuar deshabilitado';
+    document.getElementById('sc-dlbl').textContent='Continuar deshabilitado';
     if(scStep<moms.length-1){
-      document.getElementById('sc-confirm').outerHTML=`<button class="br-next-btn" onclick="scNext()">Siguiente momento →</button>`;
+      document.getElementById('sc-confirm').outerHTML=
+        '<button class="br-sig" onclick="scNext()">Siguiente momento →</button>';
     } else {
       document.getElementById('sc-confirm').style.display='none';
       nb.disabled=false;nb.style.opacity='1';
@@ -825,6 +1150,7 @@ function scenario_close(el){
 }
 
 function complete(el){
+  const today=new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
   el.innerHTML=`<div class="done-wrap">
     <i class="ti ti-trophy done-icon"></i>
     <h2>${uname?'¡'+uname+'! Llegaste al final.':'¡Felicitaciones! Llegaste al final.'}</h2>
@@ -836,11 +1162,297 @@ function complete(el){
       <div class="dbg">✓ M04: El proceso comercial</div>
       <div class="dbg">✓ M05: Cierre y posventa</div>
     </div>
-    <button class="btn btn-p" onclick="goTo(0)">Reiniciar demo</button>
+    <div class="cert">
+      <div class="cert-badge">Certificado de finalización</div>
+      <h3>De cero a primer cierre</h3>
+      <div class="cert-name">${uname||'Vendedor/a'}</h3>
+      <div class="cert-desc">Ha completado el programa de onboarding para vendedores de automatización, demostrando comprensión del ciclo comercial, manejo del discurso técnico-comercial y dominio de las herramientas de cierre.</div>
+      <div class="cert-date">Emitido el ${today} · Onboarding para vendedores V 2.0</div>
+    </div>
+    <div class="done-btns" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="window.print()"><i class="ti ti-printer" style="margin-right:6px"></i>Imprimir certificado</button>
+      <button class="btn btn-s" onclick="document.getElementById('reset-modal').classList.add('on')">Reiniciar demo</button>
+    </div>
   </div>`;
   document.getElementById('btn-next').style.display='none';
 }
 
+// ── NEW SLIDES ────────────────────────────
+
+function calc_time(el){
+  el.innerHTML=modTag(0)+`<h1 class="st">¿Cuánto vale el tiempo de tu cliente?</h1>
+    <p class="ss">Antes de hablar de automatización, necesitas sentir el problema en números. Escribe una estimación — no hay respuesta correcta.</p>
+    <div class="calc-wrap">
+      <div class="calc-inputs">
+        <div><label>¿Cuántas personas tiene el equipo operativo de tu cliente?</label>
+          <div class="calc-input-row"><input type="number" id="ci-p" min="1" max="500" placeholder="15" oninput="calcCost()"><span class="calc-unit">personas</span></div></div>
+        <div><label>¿Cuántas horas semanales dedican a tareas repetitivas?</label>
+          <div class="calc-input-row"><input type="number" id="ci-h" min="1" max="40" placeholder="8" oninput="calcCost()"><span class="calc-unit">horas / persona / sem</span></div></div>
+      </div>
+      <div class="calc-result" id="cr"><div class="calc-placeholder">Ingresa los datos para ver el cálculo</div></div>
+    </div>
+    <div class="calc-insight" id="ci-ins" style="display:none">
+      <i class="ti ti-bulb"></i>
+      <p>Ese número es el costo invisible que el cliente no ha calculado. <strong>Tú sí lo calculaste.</strong> Esa diferencia es tu ventaja en la primera conversación.</p>
+    </div>`;
+  window.calcCost=()=>{
+    const p=parseInt(document.getElementById('ci-p').value)||0;
+    const h=parseInt(document.getElementById('ci-h').value)||0;
+    const cr=document.getElementById('cr'),ins=document.getElementById('ci-ins');
+    if(p>0&&h>0){
+      const wk=p*h,yr=wk*52,cost=yr*25;
+      cr.innerHTML=`<div class="calc-num-grid">
+        <div class="calc-stat"><div class="calc-num">${wk.toLocaleString()}</div><div class="calc-lbl">horas/semana</div></div>
+        <div class="calc-div"></div>
+        <div class="calc-stat"><div class="calc-num">${yr.toLocaleString()}</div><div class="calc-lbl">horas/año</div></div>
+        <div class="calc-div"></div>
+        <div class="calc-stat"><div class="calc-num">~$${(cost/1000).toFixed(0)}K</div><div class="calc-lbl">costo est./año</div></div>
+      </div>`;
+      ins.style.display='flex';
+    }else{cr.innerHTML='<div class="calc-placeholder">Ingresa los datos para ver el cálculo</div>';ins.style.display='none';}
+  };
+}
+
+function services_catalog(el){
+  const svs=[
+    {ic:'ti-mail',n:'Automatización de emails',p:'Equipo pierde tiempo enviando seguimientos y confirmaciones a mano.'},
+    {ic:'ti-git-merge',n:'Integración de sistemas',p:'Datos duplicados o desactualizados entre plataformas distintas.'},
+    {ic:'ti-chart-bar',n:'Reportes automáticos',p:'Horas semanales armando reportes en Excel que podrían generarse solos.'},
+    {ic:'ti-user-check',n:'Onboarding de clientes',p:'Nuevos clientes sin proceso claro de bienvenida y activación.'},
+    {ic:'ti-receipt',n:'Facturación automatizada',p:'Facturas que se generan tarde, mal, o dependen de una sola persona.'},
+    {ic:'ti-checkbox',n:'Flujos de aprobación',p:'Aprobaciones perdidas en cadenas interminables de WhatsApp o email.'},
+    {ic:'ti-bell-ringing',n:'Notificaciones inteligentes',p:'Equipo sin alertas cuando algo cambia, falla o requiere acción.'},
+    {ic:'ti-database-export',n:'Extracción de datos',p:'Información atrapada en PDFs o formularios que no se conectan con nada.'}
+  ];
+  el.innerHTML=modTag(0)+`<h1 class="st">El catálogo de servicios</h1>
+    <p class="ss">Ocho líneas de servicio. Cada una existe porque hay un dolor de negocio detrás. Haz clic en cada tarjeta para ver el problema que resuelve.</p>
+    <div class="srv-grid">${svs.map((s,i)=>`
+      <div class="srv-card" onclick="this.classList.toggle('flipped')">
+        <div class="srv-inner">
+          <div class="srv-front"><i class="ti ${s.ic} srv-icon"></i><div class="srv-name">${s.n}</div><div class="srv-hint">Clic para ver el problema</div></div>
+          <div class="srv-back"><div class="srv-back-lbl">Problema que resuelve</div><div class="srv-back-txt">${s.p}</div></div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="font-size:13px;color:var(--txt-xlt);margin-top:4px;font-style:italic">Haz clic en cada tarjeta para voltearla.</div>`;
+}
+
+function value_prop(el){
+  const rows=[
+    {feat:'Tiempo de impl.',gen:'3–6 meses con desarrollo custom',nos:'2–6 semanas (procesos existentes)'},
+    {feat:'Punto de partida',gen:'Construye desde cero',nos:'Conecta lo que ya tienes'},
+    {feat:'Riesgo',gen:'Alto — inversión antes de resultados',nos:'Bajo — resultados visibles en fase 1'},
+    {feat:'Mantenimiento',gen:'Requiere equipo técnico interno',nos:'Incluido en la relación de la agencia'},
+    {feat:'Foco',gen:'La tecnología en sí misma',nos:'El proceso de negocio del cliente'}
+  ];
+  let revealed=new Set();
+  el.innerHTML=modTag(0)+`<h1 class="st">¿Por qué nosotros?</h1>
+    <p class="ss">Cuando un cliente busca automatización, tiene opciones. Lo que nos diferencia no es la tecnología — es cómo trabajamos. Haz clic en cada fila para revelar la comparación.</p>
+    <div class="vp-table">
+      <div class="vp-hdr"><div></div><div>Agencia genérica / Freelancer</div><div class="vp-hdr-us">Nosotros</div></div>
+      ${rows.map((r,i)=>`<div class="vp-row" id="vpr-${i}" onclick="revVp(${i})">
+        <div class="vp-feat">${r.feat}</div>
+        <div class="vp-gen" id="vpg-${i}"><span class="vp-ph">Clic para revelar</span></div>
+        <div class="vp-us" id="vpu-${i}"><span class="vp-ph">Clic para revelar</span></div>
+      </div>`).join('')}
+    </div>
+    <div id="vp-msg" style="font-size:13px;color:var(--txt-xlt);font-style:italic">Haz clic fila por fila para construir el argumento.</div>`;
+  window._vpRows=rows;window._vpRev=new Set();
+  window.revVp=(i)=>{
+    if(window._vpRev.has(i))return;window._vpRev.add(i);
+    const r=window._vpRows[i];
+    document.getElementById('vpg-'+i).textContent=r.gen;
+    document.getElementById('vpu-'+i).innerHTML='<strong>'+r.nos+'</strong>';
+    document.getElementById('vpr-'+i).classList.add('revealed');
+    if(window._vpRev.size===window._vpRows.length){document.getElementById('vp-msg').textContent='✓ Comparación completa. Estos son tus argumentos de venta.';document.getElementById('vp-msg').style.color='var(--olive)';}
+  };
+}
+
+function reflect_close1(el){
+  el.innerHTML=modTag(0)+`<h1 class="st">Reto de cierre del módulo</h1>
+    <p class="ss">Una prueba de comprensión diferente.</p>
+    <div class="rcard">
+      <div style="background:var(--terra-pl);border-radius:8px;padding:16px 20px;border-left:3px solid var(--terra);margin-bottom:20px">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--terra);margin-bottom:6px">El reto</div>
+        <p style="font-size:16px;color:var(--txt);font-weight:500;margin:0;line-height:1.5">Explícale a un gerente de operaciones qué hace esta agencia. <strong>Sin usar la palabra "automatización".</strong> Máximo 3 oraciones.</p>
+      </div>
+      <p>Si puedes explicarlo sin esa palabra, lo entiendes de verdad. Guarda tu respuesta — la vas a comparar con tu pitch en el Módulo 3.</p>
+      <textarea id="rc1-ta" style="width:100%;min-height:100px;border:1px solid var(--olive);border-radius:8px;padding:12px;font-size:14px;font-family:var(--ff-body);color:var(--txt);background:var(--bg);resize:vertical;outline:none;transition:border-color .2s,background var(--transition-dur),color var(--transition-dur)" placeholder="Escribe tu explicación aquí...">${reflectClose1}</textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <span id="rc1-st" style="font-size:13px;color:${reflectClose1?'var(--olive)':'var(--txt-xlt)'}">${reflectClose1?'✓ Guardado.':'No guardado aún'}</span>
+        <button class="btn btn-sv" onclick="saveRC1()">Guardar mi respuesta</button>
+      </div>
+    </div>`;
+  document.getElementById('rc1-ta').addEventListener('input',e=>{reflectClose1=e.target.value;saveState();document.getElementById('rc1-st').textContent='Guardando...';});
+  window.saveRC1=()=>{const v=document.getElementById('rc1-ta').value.trim();if(v){reflectClose1=v;saveState();document.getElementById('rc1-st').textContent='✓ Guardado. Nos vemos en el Módulo 3.';document.getElementById('rc1-st').style.color='var(--olive)';}};
+}
+
+function profile_quiz(el){
+  const cases=[
+    {txt:'"Llevamos tres años creciendo, pero ahora el equipo no da abasto. Me pasan reportes en Excel que nadie lee y los pedidos se están cayendo."',opts:['Laura — Gerente de Operaciones','Diego — Dueño de PYME','Paola — Directora Comercial'],cor:0,ok:'Correcto. El foco en operaciones, procesos caídos y volumen es el mundo de Laura.',nok:'Lee de nuevo: empresa mediana, problema operativo, equipo con sobrecarga. Ese es el perfil de Laura.'},
+    {txt:'"Yo soy el que vende, opera y apaga incendios. Si me voy de vacaciones una semana, el negocio se para. Necesito que las cosas funcionen sin que yo esté en todo."',opts:['Laura — Gerente de Operaciones','Diego — Dueño de PYME','Paola — Directora Comercial'],cor:1,ok:'Correcto. "Si me voy el negocio se para" es el dolor clásico de Diego.',nok:'La clave es "sin que yo esté en todo" — esa es la motivación de Diego, el dueño de PYME.'},
+    {txt:'"Mi equipo de ventas tiene 12 personas. El problema es que pasan más tiempo actualizando el CRM y enviando propuestas que hablando con clientes."',opts:['Laura — Gerente de Operaciones','Diego — Dueño de PYME','Paola — Directora Comercial'],cor:2,ok:'Correcto. Equipo comercial perdiendo tiempo en tareas manuales = el dolor exacto de Paola.',nok:'El contexto es un equipo de ventas y tiempo perdido en tareas no comerciales. Ese es el perfil de Paola.'}
+  ];
+  el.innerHTML=modTag(1)+`<h1 class="st">¿A quién tienes adelante?</h1>
+    <p class="ss">Lee cada caso y decide con qué perfil estás hablando.</p>
+    ${cases.map((c,i)=>`<div class="pq-case">
+      <div class="pq-num">Caso ${i+1} de ${cases.length}</div>
+      <div class="pq-txt">${c.txt}</div>
+      <div class="pq-opts">${c.opts.map((o,j)=>`<button class="pq-btn" id="pqb-${i}-${j}" onclick="ansPQ(${i},${j})">${o}</button>`).join('')}</div>
+      <div class="pq-fb" id="pqfb-${i}" style="display:none"></div>
+    </div>`).join('')}`;
+  window._pqCases=cases;
+  window.ansPQ=(ci,j)=>{
+    const c=window._pqCases[ci];
+    document.querySelectorAll(`#pqb-${ci}-0,#pqb-${ci}-1,#pqb-${ci}-2`).forEach(b=>b.disabled=true);
+    const isOk=j===c.cor;
+    document.getElementById(`pqb-${ci}-${j}`).classList.add(isOk?'pq-cor':'pq-wr');
+    if(!isOk)document.getElementById(`pqb-${ci}-${c.cor}`).classList.add('pq-cor');
+    const fb=document.getElementById(`pqfb-${ci}`);
+    fb.style.display='block';fb.className='pq-fb '+(isOk?'pq-fb-ok':'pq-fb-nok');
+    fb.textContent=isOk?c.ok:c.nok;
+  };
+}
+
+function iceberg_content(el){
+  el.innerHTML=modTag(1)+`<h1 class="st">El iceberg del cliente</h1>
+    <p class="ss">"Queremos mejorar la eficiencia" puede significar diez cosas distintas. Tu trabajo no es proponer soluciones — es llegar a la parte sumergida.</p>
+    <div class="iceberg-top">
+      <div class="iceberg-top-lbl">Lo que dice</div>
+      <div class="ice-item">"Queremos mejorar nuestra eficiencia"</div>
+      <div class="ice-item">"Tenemos problemas de comunicación interna"</div>
+      <div class="ice-item">"Buscamos digitalizar algunos procesos"</div>
+    </div>
+    <div class="iceberg-water"></div>
+    <div class="iceberg-bot">
+      <div class="iceberg-bot-lbl">Lo que realmente le preocupa</div>
+      <div class="ice-item-dark" id="ice-1">Un proceso que se rompió en el peor momento</div>
+      <div class="ice-item-dark" id="ice-2">Un competidor que creció más rápido</div>
+      <div class="ice-item-dark" id="ice-3">El jefe preguntando por qué no mejoran los números</div>
+      <div class="ice-item-dark" id="ice-4">Miedo a perder un cliente clave por un error manual</div>
+      <button class="btn btn-s" id="ice-btn" onclick="revealIce()" style="margin-top:12px;font-size:13px">Revelar lo que está debajo →</button>
+    </div>
+    <div class="iceberg-insight" id="ice-ins">
+      <i class="ti ti-bulb"></i>
+      <div>Los <strong>disparadores de compra</strong> están debajo de la línea de agua. Las preguntas SPIN son tu herramienta para llegar ahí sin que el cliente sienta que lo interrogas.</div>
+    </div>`;
+  window.revealIce=()=>{
+    [1,2,3,4].forEach((n,i)=>setTimeout(()=>document.getElementById('ice-'+n).classList.add('vis'),i*180));
+    document.getElementById('ice-btn').style.display='none';
+    setTimeout(()=>document.getElementById('ice-ins').classList.add('vis'),800);
+  };
+}
+
+function fff_model(el){
+  const obs=[
+    {ob:'"Esto suena muy caro para el tamaño de nuestra empresa."',feel:'Entiendo perfectamente esa preocupación.',felt:'De hecho, muchos de nuestros clientes en empresas similares llegaron con la misma duda.',found:'Lo que encontraron fue que el costo de no actuar — en tiempo de equipo y errores — era mayor que la inversión. La mayoría recuperó la inversión en los primeros tres meses.'},
+    {ob:'"Tenemos miedo de que la implementación interrumpa nuestra operación."',feel:'Es una preocupación válida — nadie quiere paralizar lo que ya funciona.',felt:'Varios de nuestros clientes tenían exactamente esa preocupación antes de empezar.',found:'Lo que descubrieron es que trabajamos sobre procesos existentes, así que el impacto en la operación es mínimo. La mayoría ve resultados en las primeras dos a cuatro semanas.'},
+    {ob:'"Ya lo hacemos con Excel y funciona."',feel:'Excel es una herramienta poderosa y entiendo por qué confían en él.',felt:'Muchos de los equipos con los que trabajamos también arrancaron así.',found:'Lo que encontraron es que Excel funciona — hasta que el equipo crece, alguien lo borra, o el proceso cambia. Lo que hacemos es llevar esa misma lógica a un sistema que no depende de que nadie lo abra.'}
+  ];
+  el.innerHTML=modTag(2)+`<h1 class="st">Manejo de objeciones: Feel-Felt-Found</h1>
+    <p class="ss">Tres pasos: valida la emoción → normaliza con otros clientes → redirige con evidencia. Abre cada objeción para ver cómo suena.</p>
+    <div class="fff-intro">
+      <div class="fff-step"><div class="fff-badge fff-f1">Feel</div><div class="fff-step-desc">Valida lo que siente.<br>No discutas.</div></div>
+      <div class="fff-arrow"><i class="ti ti-arrow-right"></i></div>
+      <div class="fff-step"><div class="fff-badge fff-f2">Felt</div><div class="fff-step-desc">Otros también lo sintieron.<br>No estás solo.</div></div>
+      <div class="fff-arrow"><i class="ti ti-arrow-right"></i></div>
+      <div class="fff-step"><div class="fff-badge fff-f3">Found</div><div class="fff-step-desc">Esto es lo que descubrieron.<br>Evidencia real.</div></div>
+    </div>
+    <div class="acc">${obs.map((o,i)=>`<div class="ai" id="fff-${i}">
+      <div class="ah" onclick="t('fff',${i})"><div class="aic"><i class="ti ti-message-circle"></i></div><h4>${o.ob}</h4><i class="ti ti-chevron-down ach"></i></div>
+      <div class="ab">
+        <div class="fff-resp"><div class="fff-pill fff-f1">Feel</div><p>${o.feel}</p></div>
+        <div class="fff-resp"><div class="fff-pill fff-f2">Felt</div><p>${o.felt}</p></div>
+        <div class="fff-resp"><div class="fff-pill fff-f3">Found</div><p>${o.found}</p></div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function objections_practice(el){
+  const obs=[
+    '"No tenemos tiempo para implementar nada nuevo ahora."',
+    '"Ya intentamos algo parecido antes y no funcionó."',
+    '"Necesito consultarlo con el área de TI primero."',
+    '"¿Pueden garantizarnos que va a funcionar?"',
+    '"Prefiero esperar al próximo trimestre para verlo en el presupuesto."'
+  ];
+  el.innerHTML=modTag(2)+`<h1 class="st">Practica las respuestas</h1>
+    <p class="ss">Cinco objeciones nuevas. Para cada una, escribe tu respuesta usando Feel-Felt-Found. Usa el checklist para verificarte antes de avanzar.</p>
+    <div class="ob-practice">${obs.map((ob,i)=>`
+      <div class="ob-item">
+        <div class="ob-num">${i+1}</div>
+        <div class="ob-content">
+          <div class="ob-quote">${ob}</div>
+          <textarea class="ob-ta" id="ob-ta-${i}" placeholder="Feel: valida... Felt: otros también... Found: lo que descubrieron..." oninput="checkOb(${i})"></textarea>
+          <div class="ob-checks">
+            <div class="ob-ck" id="obc-f1-${i}"><i class="ti ti-square"></i> Feel: ¿validaste la emoción?</div>
+            <div class="ob-ck" id="obc-f2-${i}"><i class="ti ti-square"></i> Felt: ¿normalizaste?</div>
+            <div class="ob-ck" id="obc-f3-${i}"><i class="ti ti-square"></i> Found: ¿redirigiste con evidencia?</div>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  window.checkOb=(i)=>{
+    const txt=document.getElementById('ob-ta-'+i).value.toLowerCase();
+    function setC(id,ok){const e=document.getElementById(id);if(!e)return;const lbl=e.textContent.replace(/^. /,'');e.innerHTML=(ok?'<i class="ti ti-square-check" style="color:var(--olive)"></i> ':'<i class="ti ti-square"></i> ')+lbl;e.style.color=ok?'var(--olive)':'var(--txt-lt)';}
+    setC('obc-f1-'+i,txt.length>25);
+    setC('obc-f2-'+i,txt.includes('también')||txt.includes('otros')||txt.includes('clientes')||txt.includes('casos'));
+    setC('obc-f3-'+i,txt.includes('encontr')||txt.includes('result')||txt.includes('semana')||txt.includes('mes')||txt.includes('descubr')||txt.includes('ROI'));
+  };
+}
+
+function close_compare(el){
+  const rows=[
+    {asp:'Objetivo',pres:'Cerrar rápido, generar urgencia artificial',cons:'Entender si el cliente está listo y facilitar la decisión'},
+    {asp:'Frases típicas',pres:'"Esta oferta vence mañana." / "¿Qué le impide firmar hoy?"',cons:'"¿Qué necesitarían para sentirse cómodos avanzando?"'},
+    {asp:'Manejo de dudas',pres:'Las minimiza o ignora para no frenar el cierre',cons:'Las toma en serio y responde con evidencia'},
+    {asp:'Resultado inmediato',pres:'A veces cierra rápido',cons:'Cierra con mayor compromiso y menos remordimiento'},
+    {asp:'Resultado a largo plazo',pres:'Clientes que sienten que los presionaron. Cancelaciones.',cons:'Clientes que se sienten acompañados. Renovaciones y referidos.'}
+  ];
+  el.innerHTML=modTag(4)+`<h1 class="st">Cierre consultivo vs. cierre de presión</h1>
+    <p class="ss">En servicios de largo plazo, el cierre de presión destruye la relación antes de que empiece. El consultivo la construye.</p>
+    <div class="cc-table">
+      <div class="cc-hdr"><div></div><div>Cierre de presión</div><div class="cc-hdr-us">Cierre consultivo</div></div>
+      ${rows.map(r=>`<div class="cc-row">
+        <div class="cc-asp">${r.asp}</div>
+        <div class="cc-pres">${r.pres}</div>
+        <div class="cc-cons">${r.cons}</div>
+      </div>`).join('')}
+    </div>
+    <div class="cc-key"><i class="ti ti-key"></i><div>El cierre consultivo no significa ser pasivo. Significa hacer las preguntas correctas para que el cliente llegue solo a la decisión — y se sienta bien con ella.</div></div>`;
+}
+
+function plan_90(el){
+  const months=[
+    {key:'m1',title:'Mes 1 — Arranque',desc:'Asegura que el proyecto empezó bien y el cliente no tiene sorpresas.'},
+    {key:'m2',title:'Mes 2 — Revisión de avance',desc:'El proyecto está en curso. El cliente debe ver progreso concreto.'},
+    {key:'m3',title:'Mes 3 — Resultados y expansión',desc:'¿Se cumplió lo prometido? Momento para expandir la relación.'}
+  ];
+  el.innerHTML=modTag(4)+`<h1 class="st">Los primeros 90 días: tu rol posventa</h1>
+    <p class="ss">El vendedor que desaparece pierde la renovación, la recomendación y la expansión. Diseña tu plan para el caso Norpack.</p>
+    <div class="plan-grid">${months.map(m=>`
+      <div class="plan-card">
+        <div class="plan-title">${m.title}</div>
+        <div class="plan-desc">${m.desc}</div>
+        <div class="plan-fields">
+          <div class="plan-field"><label>Objetivo del contacto</label>
+            <input type="text" placeholder="¿Qué quieres lograr?" value="${plan90[m.key].obj}" oninput="plan90['${m.key}'].obj=this.value;saveState();updPlan90()"></div>
+          <div class="plan-field"><label>Canal</label>
+            <select oninput="plan90['${m.key}'].canal=this.value;saveState();updPlan90()">
+              <option value="">Selecciona...</option>
+              ${['Email','Llamada','Reunión','WhatsApp'].map(c=>`<option${plan90[m.key].canal===c?' selected':''}>${c}</option>`).join('')}
+            </select></div>
+          <div class="plan-field"><label>Mensaje clave</label>
+            <input type="text" placeholder="¿Qué les dirás?" value="${plan90[m.key].msg}" oninput="plan90['${m.key}'].msg=this.value;saveState();updPlan90()"></div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div id="plan90-st" style="font-size:13px;color:var(--txt-xlt);font-style:italic"></div>`;
+  window.updPlan90=()=>{const el=document.getElementById('plan90-st');if(el){el.textContent='✓ Plan guardado.';el.style.color='var(--olive)';}};
+}
+
+// ── INIT ──────────────────────────────────
+loadState();
 render();
 </script>
 </body>
